@@ -3,6 +3,8 @@
 #include <math.h>
 #include <string.h>
 
+#define SPACEBAR 32
+
 static void on_display(void);
 static void on_keyboard(unsigned char key, int x, int y);
 static void on_reshape(int width, int height);
@@ -11,13 +13,17 @@ static void on_timer(int value);
 
 //deklaracije globalnih promenljivih
 int timer_active;
+float window_width;
+float window_height;
+
 
 
 	//promenljive vezane za lokaciju sfere
 int brojac;
-float visina;
-float sirina;
+float translate_y;
+float translate_x;
 int collision;
+float parametar_visine;
 
 	//promenljive vezane za lokaciju spikesa
 float lift;
@@ -46,8 +52,9 @@ int main(int argc, char **argv){
 	//inicijalizacija globalnih promenljivih
 	timer_active = 0;
 	brojac = 0;
-	visina = 0;
-	sirina = 0;
+	translate_y = 0;
+	translate_x = 0;
+	parametar_visine = translate_y;
 	collision = 0; //nije doslo do kolizije
 
 	cam_pos = 0;
@@ -67,14 +74,14 @@ void draw_new_spike(const char *side){
 
 	glPushMatrix();
 	if(strcmp("left", side) == 0){
-		glTranslatef(-6.8, 0, 0);
+		glTranslatef(-window_width/2, 0, 0);
 		glRotatef(90, 0, 1, 0);
 	}
 	else{
-		glTranslatef(6.8, 0, 0);
+		glTranslatef(window_width/2, 0, 0);
 		glRotatef(-90, 0, 1, 0);
 	}
-	glutSolidCone(1, 2, 20, 8);
+	glutSolidCone(20, 25, 20, 8);
 	glPopMatrix();
 }
 
@@ -93,15 +100,13 @@ static void on_display(void){
     GLfloat specular_coeffs[] = { 1, 1, 1, 1 };
     GLfloat shininess = 30;
 
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluPerspective(60, (float)3/5, 1, 50);
+	
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
 	//pozicioniranje kamere
-	gluLookAt(0, 0, 20, 0, 0, 0, 0, 1, 0);
+	gluLookAt(0, 0, 10, 0, 0, 0, 0, 1, 0);
 	//
 
 	glEnable(GL_LIGHTING);
@@ -126,13 +131,13 @@ static void on_display(void){
 		//glavna lopta
 	glColor3f(0.7, 0, 0);
 	glPushMatrix();
-	glTranslatef(sirina, visina, 0);
-	glutSolidSphere(1, 10, 10);
+	glTranslatef(translate_x, translate_y, 0);
+	glutSolidSphere(20, 10, 10);
 	glPopMatrix();
 
-
-	glTranslatef(0, -visina, 0);
-		//piramide - spikes
+	//mislim da je ovo za pomeranje visine cunjeva
+	// glTranslatef(0, parametar_visine - translate_y, 0);
+	// 	//piramide - spikes
 	draw_new_spike("left");
 	draw_new_spike("right");
 
@@ -155,6 +160,21 @@ static void on_keyboard(unsigned char key, int x, int y){
 				glutTimerFunc(20, on_timer, 0);
 			}
 			break;
+		case SPACEBAR:
+			if(!timer_active){
+				timer_active = 1;
+				glutTimerFunc(20, on_timer, 0);
+			}
+			else{
+				parametar_visine -= 0.6;
+				/*znaci ovako postizemo da 
+				se brzina ne povecava - 
+				ne zovemo timer funkciju. genijalno.
+				samo menjamo parametre*/
+				// timer_active = 1;
+				// glutTimerFunc(20, on_timer, 1);
+			}
+			break;
 		case 's':
 		case 'S':
 			timer_active = 0;
@@ -166,9 +186,13 @@ static void on_keyboard(unsigned char key, int x, int y){
 static void on_reshape(int width, int height){
 	glViewport(0, 0, width, height);
 
+	window_width = width;
+	window_height = height;
+
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(60, (float)width/height, 1, 20);
+	//gluPerspective(60, (float)3/5, 1, 50);
+	glOrtho(-width/2, width/2, -height/2, height/2, -100, 100);
 }
 
 static void on_mouse(int button, int state, int x, int y){
@@ -187,21 +211,23 @@ static void on_timer(int value){
 		return;
 
 	//menjanje vrednosti promenljivih koje ucestvuju u animaciji
+	
 
-	if(sirina > 6.8){
+	if(translate_x > window_width/2){
 		collision = 1;
 	}
-	else if(sirina < -6.8){
+	else if(translate_x < -window_width/2){
 		collision = 0;
 	}
 
-	brojac = (collision==0) ? brojac+1 : brojac -1;
-	visina = sin(2*brojac*2*M_PI/180);
-	sirina = brojac*2*M_PI/180;
+	brojac = (collision==0) ? brojac+1 : brojac-1;
+	
+	// translate_y = window_height/4*sin(2*brojac*2*M_PI/180);
+	 translate_x = window_height/10*brojac*2*M_PI/180;
 		
-	if(lift < -14)
-		lift = 14;
-	lift -= 0.04;
+	// if(lift < -14)
+	// 	lift = 14;
+	// lift -= 0.04;
 	//
 
 	glutPostRedisplay();
