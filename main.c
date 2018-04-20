@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
+#include <stdbool.h>
 
 #define SPACEBAR 32
 
@@ -19,18 +20,16 @@ float window_height;
 
 
 	//promenljive vezane za lokaciju sfere
-int brojac;
+float brojac;
 float translate_y;
 float translate_x;
 int collision;
-float parametar_visine;
+bool jump;
+bool fall;
 
 	//promenljive vezane za lokaciju spikesa
 float lift;
 
-	//promenljive vezane za lokaciju kamere
-float cam_pos;
-//
 
 int main(int argc, char **argv){
 	glutInit(&argc, argv);
@@ -54,13 +53,10 @@ int main(int argc, char **argv){
 	brojac = 0;
 	translate_y = 0;
 	translate_x = 0;
-	parametar_visine = translate_y;
 	collision = 0; //nije doslo do kolizije
-
-	cam_pos = 0;
+	jump = false;
 
 	lift = 0;
-	//
 
 	glutMainLoop();
 	return 0;
@@ -137,14 +133,10 @@ static void on_display(void){
 
 	//mislim da je ovo za pomeranje visine cunjeva
 	// glTranslatef(0, parametar_visine - translate_y, 0);
-	// 	//piramide - spikes
+	//piramide - spikes
 	draw_new_spike("left");
 	draw_new_spike("right");
 
-	// glutWireTetrahedron();
-	//glutWireCone(1, 2, 20, 8);
-
-	//
 
 	glutSwapBuffers();
 }
@@ -163,16 +155,16 @@ static void on_keyboard(unsigned char key, int x, int y){
 		case SPACEBAR:
 			if(!timer_active){
 				timer_active = 1;
+
 				glutTimerFunc(20, on_timer, 0);
+				
 			}
 			else{
-				parametar_visine -= 0.6;
+				jump = true;
 				/*znaci ovako postizemo da 
 				se brzina ne povecava - 
 				ne zovemo timer funkciju. genijalno.
 				samo menjamo parametre*/
-				// timer_active = 1;
-				// glutTimerFunc(20, on_timer, 1);
 			}
 			break;
 		case 's':
@@ -203,7 +195,6 @@ static void on_mouse(int button, int state, int x, int y){
 		}
 	}
 
-	cam_pos = x/10;
 }
 
 static void on_timer(int value){
@@ -220,16 +211,23 @@ static void on_timer(int value){
 		collision = 0;
 	}
 
-	brojac = (collision==0) ? brojac+1 : brojac-1;
+	//zasto? da bi krenuo u skok ispocetka, ali sa tog
+	//istog mesta. nadam se.
+	if(jump) {brojac = 0;}
+
+	brojac = (collision==0) ? brojac+0.1 : brojac-0.1;
+
+
+	//try to plot  -(x^2-1)
+	translate_x += brojac;
+	translate_y += -1*(brojac*brojac-4);
 	
-	// translate_y = window_height/4*sin(2*brojac*2*M_PI/180);
-	 translate_x = window_height/10*brojac*2*M_PI/180;
-		
+
 	// if(lift < -14)
 	// 	lift = 14;
 	// lift -= 0.04;
 	//
-
+	jump = false;
 	glutPostRedisplay();
 
 	if(timer_active){
