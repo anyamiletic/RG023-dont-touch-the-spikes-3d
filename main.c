@@ -26,7 +26,7 @@ bool jump;
 bool fall;
 
 	//promenljive vezane za lokaciju spikesa
-float lift;
+
 
 
 int main(int argc, char **argv){
@@ -54,7 +54,7 @@ int main(int argc, char **argv){
 	collision = 0; //nije doslo do kolizije
 	jump = false;
 
-	lift = 0;
+	
 
 	glutMainLoop();
 	return 0;

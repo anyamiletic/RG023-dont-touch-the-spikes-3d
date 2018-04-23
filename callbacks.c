@@ -8,6 +8,8 @@
 #include "callbacks.h"
 
 #define SPACEBAR 32
+#define ESC 27
+
 
 extern int timer_active;
 extern float window_width;
@@ -20,6 +22,12 @@ extern float translate_x;
 extern int collision;
 extern bool jump;
 extern bool fall;
+
+	//promenljive vezane za lokaciju spikesa
+int difficulty_level = 1;
+bool wall = false;
+int visine_levo[50];
+int visine_desno[50];
 
 void on_display(void){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -71,25 +79,33 @@ void on_display(void){
 	glutSolidSphere(20, 10, 10);
 	glPopMatrix();
 
-	//mislim da je ovo za pomeranje visine cunjeva
+	
 	//u oridjidji igrici se spikeovi ne 
 	//pomeraju, samo se svaki put ponovo stvaraju
-	//glTranslatef(0, - abs(translate_y), 0);
-	//piramide - spikes
-	draw_new_spike("left");
-	draw_new_spike("right");
+	
+	//draw_new_spike("left", 0);
+	// draw_new_spike("right", 0);
 
+	// if(wall){
+	// 	if(collision == 1) {draw_spike_wall("right", difficulty_level);}
+	// 	else {draw_spike_wall("left", difficulty_level++);}
+	// }
+	draw_spike_wall("left", difficulty_level, wall);
+	draw_spike_wall("right", difficulty_level, wall);
+
+	wall = false;
 
 	glutSwapBuffers();
 }
 
 void on_keyboard(unsigned char key, int x, int y){
 	switch(key){
-		case 27:
+		case ESC:
 			exit(EXIT_SUCCESS);
 		case 'g':
 		case 'G':
 			if(!timer_active){
+				init_heights();
 				timer_active = 1;
 				glutTimerFunc(20, on_timer, 0);
 			}
@@ -97,17 +113,16 @@ void on_keyboard(unsigned char key, int x, int y){
 		case SPACEBAR:
 			if(!timer_active){
 				timer_active = 1;
-
-				glutTimerFunc(20, on_timer, 0);
 				
+				glutTimerFunc(20, on_timer, 0);
 			}
 			else{
 				jump = true;
-				printf("%f\n", window_width);
 				/*znaci ovako postizemo da 
 				se brzina ne povecava - 
 				ne zovemo timer funkciju. genijalno.
-				samo menjamo parametre*/
+				samo menjamo parametre
+				RETARDE GLUPI */
 			}
 			break;
 		case 's':
@@ -149,16 +164,24 @@ void on_timer(int value){
 
 	if(translate_x > window_width/2 - 20){
 		collision = 1;
+		brojac = -brojac;
+		printf("%f\n", brojac);
+		wall = true;
+		difficulty_level += 1;
 	}
 	else if(translate_x < -window_width/2 + 20){
 		collision = 0;
+		brojac = -brojac;
+		printf("%f\n", brojac);
+		wall = true;
+		difficulty_level += 1;
 	}
 
 	//zasto? da bi krenuo u skok ispocetka, ali sa tog
 	//istog mesta. nadam se.
 	if(jump) {brojac = 0;}
 
-	brojac = (collision==0) ? brojac+0.1 : brojac-0.1;
+	brojac = (collision==0) ? brojac+0.1 : brojac-0.1;	//aaaaaaaaaaaaaaaaaaa
 
 
 	//try to plot  -((x^2-1)
