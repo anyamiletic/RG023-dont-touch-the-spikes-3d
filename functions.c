@@ -42,28 +42,53 @@ void draw_new_spike(const char *side, float height){
 }
 
 void draw_spike_wall(const char *side, int difficulty_level, bool change){
+	int i;
+	int j;
+
 	if(change){
 		srand(time(NULL));
 
-		int i = 0;
 		int rand_broj;
+		
+		float current_height;
 
 		printf("difficulty_level: %d______\n", difficulty_level);
 		for(i = 0; i < difficulty_level; i++){
+			bool is_touching = false;
 			//number of spikes we need - 
 			//window height / spike base
-			rand_broj = (window_height/20) * rand()/RAND_MAX; // 0-max spikes to fit screen
-			printf("%d\n", rand_broj);
-			if(strcmp("left", side) == 0)
-				visine_levo[i] = rand_broj*20-10-window_height/2;
-			else
-				visine_desno[i] = rand_broj*20-10-window_height/2;
+			do{
+				is_touching = false;
+				rand_broj = (window_height/20) * rand()/RAND_MAX; // 0-max spikes to fit screen
+				
+				current_height = rand_broj*20-10-window_height/2;
+				printf("%4.4f -- %d\n", current_height, i);
 
-			draw_new_spike(side, rand_broj*20-10-window_height/2);
+				if(strcmp("left", side) == 0){
+					for(j = 0; j < i; j++){
+						if(spike_collision(current_height, visine_levo[j]))
+							is_touching = true;
+					}
+				}
+				else {
+					for(j = 0; j < i; j++){
+						if(spike_collision(current_height, visine_desno[j]))
+							is_touching = true;
+					}
+				}
+				printf("%s\n", is_touching ? "true":"false");
+			}while(is_touching);
+			
+
+			if(strcmp("left", side) == 0)
+				visine_levo[i] = current_height;
+			else
+				visine_desno[i] = current_height;
+
+			draw_new_spike(side, current_height);
 		}
 	}
 	else{
-		int i;
 		for(i = 0; i < difficulty_level; i++){
 			if(strcmp("left", side) == 0)
 				draw_new_spike(side, visine_levo[i]);
@@ -92,11 +117,17 @@ bool ball_spike_collision(float pos_x, float pos_y, float spike_height, char *si
 			return false;
 		}
 		else{
-			printf("U FJI: posx: %.4f posy: %.4f visina: %.4f\n", 
-				pos_x, pos_y, spike_height);
 			return true;
 		}
 	}
 
 	return false;
+}
+
+bool spike_collision(float height1, float height2){
+	//again, these will later be in global variable, but for now, spike width(base) is 20
+	if(height1 - height2 < 30 && height1 - height2 > -30)
+		return true;
+	else
+		return false;
 }
