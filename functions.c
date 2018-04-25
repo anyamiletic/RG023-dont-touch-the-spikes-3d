@@ -72,3 +72,31 @@ void draw_spike_wall(const char *side, int difficulty_level, bool change){
 		}
 	}
 }
+
+//returns true if the ball is touching the spike given as argument
+bool ball_spike_collision(float pos_x, float pos_y, float spike_height, char *side){
+
+	//for now, lets assume that spikes are in box-shape
+	//TODO: calc the collision with the actual shape
+	//for now, spike base 20 height 25 ball radious 20 -- all this will be through global variables
+	if((pos_x > -window_width/2 + 25 + 20)&&(pos_x < window_width/2 - 25 - 20))
+		return false;
+	if((pos_y+25 < 0 && spike_height > 0) || (pos_y > 0 && spike_height+25 < 0)){
+		//not on the same vertical side
+		return false;
+	}
+	if(((strcmp("left", side) == 0) && (pos_x < 0)) || ((strcmp("left", side) != 0) && (pos_x > 0))) {
+		//chance of collision as the ball and the spike are on the same side
+		if(abs(pos_y) - 20 > abs(spike_height) || abs(pos_y) + 20 < abs(spike_height) ){
+			//ball completely above or below spike
+			return false;
+		}
+		else{
+			printf("U FJI: posx: %.4f posy: %.4f visina: %.4f\n", 
+				pos_x, pos_y, spike_height);
+			return true;
+		}
+	}
+
+	return false;
+}

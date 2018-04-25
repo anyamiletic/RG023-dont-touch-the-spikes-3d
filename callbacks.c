@@ -83,15 +83,27 @@ void on_display(void){
 	//u oridjidji igrici se spikeovi ne 
 	//pomeraju, samo se svaki put ponovo stvaraju
 	
-	//draw_new_spike("left", 0);
-	// draw_new_spike("right", 0);
-
-	// if(wall){
-	// 	if(collision == 1) {draw_spike_wall("right", difficulty_level);}
-	// 	else {draw_spike_wall("left", difficulty_level++);}
-	// }
-	draw_spike_wall("left", difficulty_level, wall);
-	draw_spike_wall("right", difficulty_level, wall);
+	//provera za collision, treba obrisati posle!
+	int i;
+	for(i = 0; i < difficulty_level; i++){
+		if(ball_spike_collision(translate_x, translate_y, visine_levo[i], "left"))
+			printf("kolizija sa spikeom %d, posx: %.4f posy: %.4f visina: %d\n", 
+				i, translate_x, translate_y, visine_levo[i]);
+	}
+	for(i = 0; i < difficulty_level; i++){
+		if(ball_spike_collision(translate_x, translate_y, visine_desno[i], "right"))
+			printf("kolizija sa spikeom %d, posx: %.4f posy: %.4f visina: %d\n", 
+				i, translate_x, translate_y, visine_levo[i]);
+	}
+	
+	if(collision){
+		draw_spike_wall("right", difficulty_level-1, false);
+		draw_spike_wall("left", difficulty_level, wall);
+	}
+	else{
+		draw_spike_wall("left", difficulty_level-1, false);
+		draw_spike_wall("right", difficulty_level, wall);
+	}
 
 	wall = false;
 
@@ -167,14 +179,14 @@ void on_timer(int value){
 		brojac = -brojac;
 		printf("%f\n", brojac);
 		wall = true;
-		difficulty_level += 1;
+		if(difficulty_level < 10) difficulty_level += 1;
 	}
 	else if(translate_x < -window_width/2 + 20){
 		collision = 0;
 		brojac = -brojac;
 		printf("%f\n", brojac);
 		wall = true;
-		difficulty_level += 1;
+		if(difficulty_level < 10) difficulty_level += 1;
 	}
 
 	//zasto? da bi krenuo u skok ispocetka, ali sa tog
