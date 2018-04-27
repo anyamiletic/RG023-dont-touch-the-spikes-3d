@@ -26,6 +26,8 @@ bool jump;
 bool fall;
 
 	//promenljive vezane za lokaciju spikesa
+float spike_width_left;
+float spike_width_right;
 
 
 
@@ -53,7 +55,8 @@ int main(int argc, char **argv){
 	translate_x = 0;
 	collision = 0; //nije doslo do kolizije
 	jump = false;
-
+	spike_width_left = 0;
+	spike_width_right = 0;
 	
 
 	glutMainLoop();

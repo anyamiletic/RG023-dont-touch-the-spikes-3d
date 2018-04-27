@@ -13,6 +13,9 @@ extern float window_height;
 extern int visine_levo[50];
 extern int visine_desno[50];
 
+extern float spike_width_left;
+extern float spike_width_right;
+
 //lista koja cuva visine spikeova, tj rand brojeve
 //iz kojih se saznaje visina
 void init_heights(){
@@ -30,11 +33,11 @@ void draw_new_spike(const char *side, float height){
 
 	glPushMatrix();
 	if(strcmp("left", side) == 0){
-		glTranslatef(-window_width/2, height, 0);
+		glTranslatef(-spike_width_left, height, 0);
 		glRotatef(90, 0, 1, 0);
 	}
 	else{
-		glTranslatef(window_width/2, height, 0);
+		glTranslatef(spike_width_right, height, 0);
 		glRotatef(-90, 0, 1, 0);
 	}
 	glutSolidCone(20, 25, 20, 8);

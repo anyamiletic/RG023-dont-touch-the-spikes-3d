@@ -28,6 +28,8 @@ int difficulty_level = 1;
 bool wall = false;
 int visine_levo[50];
 int visine_desno[50];
+extern float spike_width_left;
+extern float spike_width_right;
 
 void on_display(void){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -118,6 +120,8 @@ void on_keyboard(unsigned char key, int x, int y){
 		case 'G':
 			if(!timer_active){
 				init_heights();
+				spike_width_left = window_width/2 + 25;
+				spike_width_right = window_width/2 + 25;
 				timer_active = 1;
 				glutTimerFunc(20, on_timer, 0);
 			}
@@ -173,21 +177,27 @@ void on_timer(int value){
 
 	//menjanje vrednosti promenljivih koje ucestvuju u animaciji
 	
-
+	//TODO ne treba svaki put da se povecava difficulty_level
 	if(translate_x > window_width/2 - 20){
+		spike_width_left = window_width/2 + 25;
 		collision = 1;
 		brojac = -brojac;
 		printf("%f\n", brojac);
 		wall = true;
 		if(difficulty_level < 10) difficulty_level += 1;
 	}
-	else if(translate_x < -window_width/2 + 20){
+	else if(translate_x < -window_width/2 + 20){				
+		spike_width_right = window_width/2 + 25;
 		collision = 0;
 		brojac = -brojac;
 		printf("%f\n", brojac);
 		wall = true;
 		if(difficulty_level < 10) difficulty_level += 1;
 	}
+
+	//spike movement
+	spike_width_left -= (spike_width_left > window_width/2) ? 0.3 : 0.0;
+	spike_width_right -= (spike_width_right > window_width/2) ? 0.3 : 0.0;
 
 	//zasto? da bi krenuo u skok ispocetka, ali sa tog
 	//istog mesta. nadam se.
