@@ -107,6 +107,8 @@ void on_display(void){
 		draw_spike_wall("right", difficulty_level, wall);
 	}
 
+	draw_token(20, 50);
+
 	wall = false;
 
 	glutSwapBuffers();

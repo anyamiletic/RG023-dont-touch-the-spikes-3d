@@ -16,12 +16,16 @@ extern int visine_desno[50];
 extern float spike_width_left;
 extern float spike_width_right;
 
+
 //lista koja cuva visine spikeova, tj rand brojeve
 //iz kojih se saznaje visina
 void init_heights(){
 	visine_levo[0] = 0;
 	visine_desno[0] = 0;
 }
+
+#define Cos(th) cos(M_PI/180*(th))
+#define Sin(th) sin(M_PI/180*(th))
 
 
 
@@ -133,4 +137,26 @@ bool spike_collision(float height1, float height2){
 		return true;
 	else
 		return false;
+}
+
+
+int parametar = 10;
+void draw_token(float token_radius, float height){
+	//TODO: draw a sphere with radius
+	//token_radius, and cut itwith a 
+	//cutting plane to achieve a 3D disc
+
+	glEnable(GL_LIGHTING);
+
+	glPushMatrix();	
+	glRotatef(parametar, 0, 1, 0);
+	glTranslatef(0, 40, 0);
+
+
+	glColor3f(0.0, 0.7, 0.7);
+	
+	gluCylinder(gluNewQuadric(), 20, 20, 20, 20, 20);
+	parametar++;
+	
+	glPopMatrix();
 }
