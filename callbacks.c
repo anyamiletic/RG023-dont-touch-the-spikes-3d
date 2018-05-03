@@ -214,9 +214,9 @@ void on_timer(int value){
 	brojac = (collision==0) ? brojac+0.1 : brojac-0.1;	//aaaaaaaaaaaaaaaaaaa
 
 	//funkcija po kojoj se krece lopta
-	//try to plot  -((x^2-1)
-	translate_x += brojac;
-	translate_y += -1*(brojac*brojac-4);
+	//try to plot  -((x^2-4)
+	translate_x += brojac*9/6;
+	translate_y += -1*((brojac)*(brojac)-4);
 	
 
 	jump = false;
