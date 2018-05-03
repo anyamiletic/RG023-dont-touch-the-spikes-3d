@@ -148,15 +148,31 @@ void draw_token(float token_radius, float height){
 
 	glEnable(GL_LIGHTING);
 
+	//cylinder
 	glPushMatrix();	
 	glRotatef(parametar, 0, 1, 0);
 	glTranslatef(0, 40, 0);
 
-
 	glColor3f(0.0, 0.7, 0.7);
 	
-	gluCylinder(gluNewQuadric(), 20, 20, 20, 20, 20);
-	parametar++;
-	
+	gluCylinder(gluNewQuadric(), 20, 20, 20, 20, 20);	
 	glPopMatrix();
+
+	//top disc
+	glPushMatrix();
+	glColor3f(0.0, 0.5, 0.5);
+	glRotatef(parametar, 0, 1, 0);
+	glTranslatef(0, 40, 20);
+	gluDisk(gluNewQuadric(), 5, 20, 20, 20);
+	glPopMatrix();
+
+	//botom disc
+	glPushMatrix();
+	glColor3f(0.0, 0.5, 0.5);
+	glRotatef(parametar, 0, 1, 0);
+	glTranslatef(0, 40, 0);	//0 and 20 should be global variables
+	gluDisk(gluNewQuadric(), 5, 20, 20, 20);
+
+	glPopMatrix();
+	parametar++;
 }
