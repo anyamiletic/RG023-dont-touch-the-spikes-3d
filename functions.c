@@ -24,9 +24,6 @@ void init_heights(){
 	visine_desno[0] = 0;
 }
 
-#define Cos(th) cos(M_PI/180*(th))
-#define Sin(th) sin(M_PI/180*(th))
-
 extern float token_width;
 extern float token_height;
 
@@ -34,7 +31,6 @@ extern float token_height;
 void draw_new_spike(const char *side, float height){
 	glEnable(GL_LIGHTING);
 	
-
 	glColor3f(0, 0, 0.7);
 
 	glPushMatrix();
@@ -61,7 +57,7 @@ void draw_spike_wall(const char *side, int difficulty_level, bool change){
 		
 		float current_height;
 
-		printf("difficulty_level: %d______\n", difficulty_level);
+		//printf("difficulty_level: %d______\n", difficulty_level);
 		for(i = 0; i < difficulty_level; i++){
 			bool is_touching = false;
 			//number of spikes we need - 
@@ -71,7 +67,7 @@ void draw_spike_wall(const char *side, int difficulty_level, bool change){
 				rand_broj = (window_height/20) * rand()/RAND_MAX; // 0-max spikes to fit screen
 				
 				current_height = rand_broj*20-10-window_height/2;
-				printf("%4.4f -- %d\n", current_height, i);
+				//printf("%4.4f -- %d\n", current_height, i);
 
 				if(strcmp("left", side) == 0){
 					for(j = 0; j < i; j++){
@@ -85,7 +81,7 @@ void draw_spike_wall(const char *side, int difficulty_level, bool change){
 							is_touching = true;
 					}
 				}
-				printf("%s\n", is_touching ? "true":"false");
+				//printf("%s\n", is_touching ? "true":"false");
 			}while(is_touching);
 			
 
@@ -152,7 +148,7 @@ void draw_token(float token_radius, float height, float width){
 
 	//cylinder
 	glPushMatrix();	
-	glTranslatef(width, height, 0); 	//width for testing collision
+	glTranslatef(width, height, 0); 
 	glRotatef(parametar, 0, 1, 0);
 	
 

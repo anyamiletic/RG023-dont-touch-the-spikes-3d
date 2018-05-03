@@ -10,7 +10,7 @@
 
 
 
-//deklaracije globalnih promenljivih
+	//deklaracije globalnih promenljivih
 int timer_active;
 float window_width;
 float window_height;
@@ -61,7 +61,7 @@ int main(int argc, char **argv){
 	jump = false;
 	spike_width_left = 0;
 	spike_width_right = 0;
-	token_width = -50;
+	token_width = -90;
 	token_height = 50;
 	
 

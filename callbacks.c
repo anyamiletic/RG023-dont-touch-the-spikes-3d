@@ -137,7 +137,9 @@ void on_keyboard(unsigned char key, int x, int y){
 		case SPACEBAR:
 			if(!timer_active){
 				timer_active = 1;
-				
+				spike_width_left = window_width/2 + 25;
+				spike_width_right = window_width/2 + 25;
+				init_heights();
 				glutTimerFunc(20, on_timer, 0);
 			}
 			else{
@@ -190,22 +192,20 @@ void on_timer(int value){
 		spike_width_left = window_width/2 + 25;
 		collision = 1;
 		brojac = -brojac;
-		printf("%f\n", brojac);
 		wall = true;
-		if(difficulty_level < 10) difficulty_level += 1;
+		if(difficulty_level < 7) difficulty_level += 1;
 	}
 	else if(translate_x < -window_width/2 + 20){				
 		spike_width_right = window_width/2 + 25;
 		collision = 0;
 		brojac = -brojac;
-		printf("%f\n", brojac);
 		wall = true;
-		if(difficulty_level < 10) difficulty_level += 1;
+		if(difficulty_level < 7) difficulty_level += 1;
 	}
 
 	//spike movement
-	spike_width_left -= (spike_width_left > window_width/2) ? 0.3 : 0.0;
-	spike_width_right -= (spike_width_right > window_width/2) ? 0.3 : 0.0;
+	spike_width_left -= (spike_width_left > window_width/2) ? 0.4 : 0.0;
+	spike_width_right -= (spike_width_right > window_width/2) ? 0.4 : 0.0;
 
 	//zasto? da bi krenuo u skok ispocetka, ali sa tog
 	//istog mesta. nadam se.
@@ -213,7 +213,7 @@ void on_timer(int value){
 
 	brojac = (collision==0) ? brojac+0.1 : brojac-0.1;	//aaaaaaaaaaaaaaaaaaa
 
-
+	//funkcija po kojoj se krece lopta
 	//try to plot  -((x^2-1)
 	translate_x += brojac;
 	translate_y += -1*(brojac*brojac-4);
