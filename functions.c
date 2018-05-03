@@ -186,7 +186,7 @@ void draw_token(float token_radius, float height, float width){
 	parametar++;
 }
 
-bool ball_token_collision(const char *side, float pos_x, float pos_y, float token_height, float token_width){
+bool ball_token_collision(float pos_x, float pos_y, float token_height, float token_width){
 	if((token_width < 0 && pos_x < 0) || (token_width > 0 && pos_x > 0)) {
 		//same side
 		if(pos_x - token_width > -(ball_radius + token_radius) && pos_x - token_width < (ball_radius + token_radius)){ 
