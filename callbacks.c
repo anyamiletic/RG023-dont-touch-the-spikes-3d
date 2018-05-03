@@ -21,7 +21,7 @@ extern float translate_y;
 extern float translate_x;
 extern int collision;
 extern bool jump;
-extern bool fall;
+extern float ball_radius;
 
 	//promenljive vezane za lokaciju spikesa
 int difficulty_level = 1;
@@ -30,10 +30,14 @@ int visine_levo[50];
 int visine_desno[50];
 extern float spike_width_left;
 extern float spike_width_right;
+	//pomenljive vezane za velicinu spikesa
+extern int spike_base;
+extern int spike_height;
 
 	//promenljive vezane za token
 extern float token_width;
 extern float token_height;
+extern float token_radius;
 
 void on_display(void){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -82,7 +86,7 @@ void on_display(void){
 	glColor3f(0.7, 0, 0);
 	glPushMatrix();
 	glTranslatef(translate_x, translate_y, 0);
-	glutSolidSphere(20, 10, 10);
+	glutSolidSphere(ball_radius, ball_radius/2, ball_radius/2);
 	glPopMatrix();
 
 	
@@ -100,7 +104,7 @@ void on_display(void){
 		if(ball_spike_collision(translate_x, translate_y, visine_desno[i], "right"))
 			printf("kolizija sa spikeom %d, posx: %.4f posy: %.4f visina: %d\n", 
 				i, translate_x, translate_y, visine_levo[i]);
-	}
+	}//end
 	
 	if(collision){
 		draw_spike_wall("right", difficulty_level-1, false);
@@ -113,7 +117,7 @@ void on_display(void){
 
 	
 	bool token_collision = ball_token_collision("left", translate_x, translate_y, token_height, token_width);
-	draw_rand_token(20, token_height, token_width, token_collision);
+	draw_rand_token(token_radius, token_height, token_width, token_collision);
 
 	wall = false;
 
@@ -128,8 +132,8 @@ void on_keyboard(unsigned char key, int x, int y){
 		case 'G':
 			if(!timer_active){
 				init_heights();
-				spike_width_left = window_width/2 + 25;
-				spike_width_right = window_width/2 + 25;
+				spike_width_left = window_width/2 + spike_height;
+				spike_width_right = window_width/2 + spike_height;
 				timer_active = 1;
 				glutTimerFunc(20, on_timer, 0);
 			}
@@ -137,8 +141,8 @@ void on_keyboard(unsigned char key, int x, int y){
 		case SPACEBAR:
 			if(!timer_active){
 				timer_active = 1;
-				spike_width_left = window_width/2 + 25;
-				spike_width_right = window_width/2 + 25;
+				spike_width_left = window_width/2 + spike_height;
+				spike_width_right = window_width/2 + spike_height;
 				init_heights();
 				glutTimerFunc(20, on_timer, 0);
 			}
@@ -189,14 +193,14 @@ void on_timer(int value){
 	
 	//TODO ne treba svaki put da se povecava difficulty_level
 	if(translate_x > window_width/2 - 20){
-		spike_width_left = window_width/2 + 25;
+		spike_width_left = window_width/2 + spike_height;
 		collision = 1;
 		brojac = -brojac;
 		wall = true;
 		if(difficulty_level < 7) difficulty_level += 1;
 	}
 	else if(translate_x < -window_width/2 + 20){				
-		spike_width_right = window_width/2 + 25;
+		spike_width_right = window_width/2 + spike_height;
 		collision = 0;
 		brojac = -brojac;
 		wall = true;
@@ -213,9 +217,9 @@ void on_timer(int value){
 
 	brojac = (collision==0) ? brojac+0.1 : brojac-0.1;	//aaaaaaaaaaaaaaaaaaa
 
-	//funkcija po kojoj se krece lopta
+	//ball movement function
 	//try to plot  -((x^2-4)
-	translate_x += brojac*9/6;
+	translate_x += brojac*9/6;	//this multiplication helps the movement
 	translate_y += -1*((brojac)*(brojac)-4);
 	
 

@@ -23,15 +23,19 @@ float translate_y;
 float translate_x;
 int collision;
 bool jump;
-bool fall;
+float ball_radius;
 
 	//promenljive vezane za lokaciju spikesa
 float spike_width_left;
 float spike_width_right;
+	//promenljive vezane za velicinu spikesa
+int spike_base;
+int spike_height;
 
 	//promenljive vezane za token
 float token_width;
 float token_height;
+float token_radius;
 
 
 
@@ -63,7 +67,10 @@ int main(int argc, char **argv){
 	spike_width_right = 0;
 	token_width = -90;
 	token_height = 50;
-	
+	spike_base = 20;
+	spike_height = 25;
+	ball_radius = 20;
+	token_radius = 15;
 
 	glutMainLoop();
 	return 0;

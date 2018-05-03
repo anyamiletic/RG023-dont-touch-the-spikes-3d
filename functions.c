@@ -8,6 +8,8 @@
 #include "functions.h"
 #include "callbacks.h"
 
+extern float ball_radius;
+
 extern float window_width;
 extern float window_height;
 extern int visine_levo[50];
@@ -15,6 +17,13 @@ extern int visine_desno[50];
 
 extern float spike_width_left;
 extern float spike_width_right;
+	//pomenljive vezane za velicinu spikesa
+extern int spike_base;
+extern int spike_height;
+
+extern float token_width;
+extern float token_height;
+extern float token_radius;
 
 
 //lista koja cuva visine spikeova, tj rand brojeve
@@ -23,10 +32,6 @@ void init_heights(){
 	visine_levo[0] = 0;
 	visine_desno[0] = 0;
 }
-
-extern float token_width;
-extern float token_height;
-
 
 void draw_new_spike(const char *side, float height){
 	glEnable(GL_LIGHTING);
@@ -42,7 +47,7 @@ void draw_new_spike(const char *side, float height){
 		glTranslatef(spike_width_right, height, 0);
 		glRotatef(-90, 0, 1, 0);
 	}
-	glutSolidCone(20, 25, 20, 8);
+	glutSolidCone(spike_base, spike_height, 20, 8);
 	glPopMatrix();
 }
 
@@ -62,12 +67,15 @@ void draw_spike_wall(const char *side, int difficulty_level, bool change){
 			bool is_touching = false;
 			//number of spikes we need - 
 			//window height / spike base
+
+			//keep picking a random number
+			//until the spike is not touching
+			//another spike
 			do{
 				is_touching = false;
-				rand_broj = (window_height/20) * rand()/RAND_MAX; // 0-max spikes to fit screen
+				rand_broj = (window_height/spike_base) * rand()/RAND_MAX; // 0-max spikes to fit screen
 				
-				current_height = rand_broj*20-10-window_height/2;
-				//printf("%4.4f -- %d\n", current_height, i);
+				current_height = rand_broj*spike_base-spike_base/2-window_height/2;
 
 				if(strcmp("left", side) == 0){
 					for(j = 0; j < i; j++){
@@ -104,20 +112,20 @@ void draw_spike_wall(const char *side, int difficulty_level, bool change){
 }
 
 //returns true if the ball is touching the spike given as argument
-bool ball_spike_collision(float pos_x, float pos_y, float spike_height, char *side){
+bool ball_spike_collision(float pos_x, float pos_y, float visina, char *side){
 
 	//for now, lets assume that spikes are in box-shape
 	//TODO: calc the collision with the actual shape
 	//for now, spike base 20 height 25 ball radious 20 -- all this will be through global variables
 	if((pos_x > -window_width/2 + 25 + 20)&&(pos_x < window_width/2 - 25 - 20))
 		return false;
-	if((pos_y+25 < 0 && spike_height > 0) || (pos_y > 0 && spike_height+25 < 0)){
+	if((pos_y+25 < 0 && visina > 0) || (pos_y > 0 && visina+25 < 0)){
 		//not on the same vertical side
 		return false;
 	}
 	if(((strcmp("left", side) == 0) && (pos_x < 0)) || ((strcmp("left", side) != 0) && (pos_x > 0))) {
 		//chance of collision as the ball and the spike are on the same side
-		if(abs(pos_y) - 20 > abs(spike_height) || abs(pos_y) + 20 < abs(spike_height) ){
+		if(abs(pos_y) - 20 > abs(visina) || abs(pos_y) + 20 < abs(visina) ){
 			//ball completely above or below spike
 			return false;
 		}
@@ -154,7 +162,7 @@ void draw_token(float token_radius, float height, float width){
 
 	glColor3f(0.0, 0.7, 0.7);
 	
-	gluCylinder(gluNewQuadric(), token_radius, 20, 20, 20, 20);	
+	gluCylinder(gluNewQuadric(), token_radius, token_radius, 20, 20, 20);	
 	glPopMatrix();
 
 	//top disc
@@ -181,8 +189,8 @@ void draw_token(float token_radius, float height, float width){
 bool ball_token_collision(const char *side, float pos_x, float pos_y, float token_height, float token_width){
 	if((token_width < 0 && pos_x < 0) || (token_width > 0 && pos_x > 0)) {
 		//same side
-		if(pos_x - token_width > -40 && pos_x - token_width < 40){
-			if(pos_y - token_height > -40 && pos_y - token_height < 40){
+		if(pos_x - token_width > -(ball_radius + token_radius) && pos_x - token_width < (ball_radius + token_radius)){ 
+			if(pos_y - token_height > -(ball_radius + token_radius) && pos_y - token_height < (ball_radius + token_radius)){
 				printf("token ball collision: %f %f - %f %f\n", pos_x,pos_y,token_width,token_height);
 				return true;
 			}

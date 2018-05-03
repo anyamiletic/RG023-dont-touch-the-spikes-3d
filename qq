@@ -1,0 +1,48 @@
+GLUDISK()                                                                     GLUDISK()
+
+NNAAMMEE
+       gglluuDDiisskk - draw a disk
+
+CC SSPPEECCIIFFIICCAATTIIOONN
+       void gglluuDDiisskk( GLUquadric* _q_u_a_d,
+                     GLdouble _i_n_n_e_r,
+                     GLdouble _o_u_t_e_r,
+                     GLint _s_l_i_c_e_s,
+                     GLint _l_o_o_p_s )
+
+       delim $$
+
+PPAARRAAMMEETTEERRSS
+       _q_u_a_d    Specifies the quadrics object (created with gglluuNNeewwQQuuaaddrriicc).
+
+       _i_n_n_e_r   Specifies the inner radius of the disk (may be 0).
+
+       _o_u_t_e_r   Specifies the outer radius of the disk.
+
+       _s_l_i_c_e_s  Specifies the number of subdivisions around the _z axis.
+
+       _l_o_o_p_s   Specifies the number of concentric rings about the origin into which the
+               disk is subdivided.
+
+DDEESSCCRRIIPPTTIIOONN
+       gglluuDDiisskk renders a disk on the _z = 0 plane. The disk has a radius of  _o_u_t_e_r,  and
+       contains  a concentric circular hole with a radius of _i_n_n_e_r. If _i_n_n_e_r is 0, then
+       no hole is generated. The disk is subdivided around the _z axis into slices (like
+       pizza  slices), and also about the _z axis into rings (as specified by _s_l_i_c_e_s and
+       _l_o_o_p_s, respectively).
+
+       With respect to orientation, the +_z side of the disk is considered to  be  "out‐
+       side" (see gglluuQQuuaaddrriiccOOrriieennttaattiioonn).  This means that if the orientation is set to
+       GGLLUU__OOUUTTSSIIDDEE, then any normals generated point along the +_z axis. Otherwise, they
+       point along the -_z axis.
+
+       If  texturing  has  been turned on (with gglluuQQuuaaddrriiccTTeexxttuurree), texture coordinates
+       are generated linearly such that where $ r = "outer" $, the value at (_r,  0,  0)
+       is  (1,  0.5), at (0, _r, 0) it is (0.5, 1), at (-_r, 0, 0) it is (0, 0.5), and at
+       (0, -_r, 0) it is (0.5, 0).
+
+SSEEEE AALLSSOO
+       gglluuCCyylliinnddeerr,     gglluuNNeewwQQuuaaddrriicc,      gglluuPPaarrttiiaallDDiisskk,      gglluuQQuuaaddrriiccOOrriieennttaattiioonn,
+       gglluuQQuuaaddrriiccTTeexxttuurree, gglluuSSpphheerree
+
+                                                                              GLUDISK()
