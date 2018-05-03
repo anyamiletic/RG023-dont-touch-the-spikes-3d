@@ -108,7 +108,7 @@ void on_display(void){
 	}
 
 	draw_token(20, 50);
-
+	ball_token_collision("left", translate_x, translate_y, 40, -50);
 	wall = false;
 
 	glutSwapBuffers();

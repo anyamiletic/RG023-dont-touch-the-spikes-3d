@@ -150,8 +150,9 @@ void draw_token(float token_radius, float height){
 
 	//cylinder
 	glPushMatrix();	
+	glTranslatef(-50, 40, 0); 	//-50 for testing collision
 	glRotatef(parametar, 0, 1, 0);
-	glTranslatef(0, 40, 0);
+	
 
 	glColor3f(0.0, 0.7, 0.7);
 	
@@ -161,18 +162,34 @@ void draw_token(float token_radius, float height){
 	//top disc
 	glPushMatrix();
 	glColor3f(0.0, 0.5, 0.5);
+	glTranslatef(-50, 40, 20);
 	glRotatef(parametar, 0, 1, 0);
-	glTranslatef(0, 40, 20);
+	
 	gluDisk(gluNewQuadric(), 5, 20, 20, 20);
 	glPopMatrix();
 
 	//botom disc
 	glPushMatrix();
 	glColor3f(0.0, 0.5, 0.5);
+	glTranslatef(-50, 40, 0);
 	glRotatef(parametar, 0, 1, 0);
-	glTranslatef(0, 40, 0);	//0 and 20 should be global variables
+		//0 and 20 should be global variables (z coordinate)
 	gluDisk(gluNewQuadric(), 5, 20, 20, 20);
 
 	glPopMatrix();
 	parametar++;
+}
+
+bool ball_token_collision(const char *side, float pos_x, float pos_y, float token_height, float token_width){
+	if((token_width < 0 && pos_x < 0) || (token_width > 0 && pos_x > 0)) {
+		//same side
+		if(pos_x - token_width > -40 && pos_x - token_width < 40){
+			if(pos_y - token_height > -40 && pos_y - token_height < 40){
+				printf("token ball collision: %f %f - %f %f\n", pos_x,pos_y,token_width,token_height);
+				return true;
+			}
+		}
+	}
+
+	return false;
 }
