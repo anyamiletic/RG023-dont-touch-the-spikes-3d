@@ -29,6 +29,10 @@ bool fall;
 float spike_width_left;
 float spike_width_right;
 
+	//promenljive vezane za token
+float token_width;
+float token_height;
+
 
 
 int main(int argc, char **argv){
@@ -57,6 +61,8 @@ int main(int argc, char **argv){
 	jump = false;
 	spike_width_left = 0;
 	spike_width_right = 0;
+	token_width = -50;
+	token_height = 50;
 	
 
 	glutMainLoop();

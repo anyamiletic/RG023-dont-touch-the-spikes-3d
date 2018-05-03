@@ -27,6 +27,8 @@ void init_heights(){
 #define Cos(th) cos(M_PI/180*(th))
 #define Sin(th) sin(M_PI/180*(th))
 
+extern float token_width;
+extern float token_height;
 
 
 void draw_new_spike(const char *side, float height){
@@ -141,7 +143,7 @@ bool spike_collision(float height1, float height2){
 
 
 int parametar = 10;
-void draw_token(float token_radius, float height){
+void draw_token(float token_radius, float height, float width){
 	//TODO: draw a sphere with radius
 	//token_radius, and cut itwith a 
 	//cutting plane to achieve a 3D disc
@@ -150,31 +152,31 @@ void draw_token(float token_radius, float height){
 
 	//cylinder
 	glPushMatrix();	
-	glTranslatef(-50, 40, 0); 	//-50 for testing collision
+	glTranslatef(width, height, 0); 	//width for testing collision
 	glRotatef(parametar, 0, 1, 0);
 	
 
 	glColor3f(0.0, 0.7, 0.7);
 	
-	gluCylinder(gluNewQuadric(), 20, 20, 20, 20, 20);	
+	gluCylinder(gluNewQuadric(), token_radius, 20, 20, 20, 20);	
 	glPopMatrix();
 
 	//top disc
 	glPushMatrix();
 	glColor3f(0.0, 0.5, 0.5);
-	glTranslatef(-50, 40, 20);
+	glTranslatef(width, height, 20);	//0 and 20 should be global variables (z coordinate)
 	glRotatef(parametar, 0, 1, 0);
 	
-	gluDisk(gluNewQuadric(), 5, 20, 20, 20);
+	gluDisk(gluNewQuadric(), 5, token_radius, 20, 20);
 	glPopMatrix();
 
 	//botom disc
 	glPushMatrix();
 	glColor3f(0.0, 0.5, 0.5);
-	glTranslatef(-50, 40, 0);
+	glTranslatef(width, height, 0);	//0 and 20 should be global variables (z coordinate)
 	glRotatef(parametar, 0, 1, 0);
-		//0 and 20 should be global variables (z coordinate)
-	gluDisk(gluNewQuadric(), 5, 20, 20, 20);
+		
+	gluDisk(gluNewQuadric(), 5, token_radius, 20, 20);
 
 	glPopMatrix();
 	parametar++;
@@ -192,4 +194,20 @@ bool ball_token_collision(const char *side, float pos_x, float pos_y, float toke
 	}
 
 	return false;
+}
+
+void draw_rand_token(float token_radius, float height, float width, bool collision){
+	if(collision){
+		float rand_broj = (window_height/20) * rand()/RAND_MAX; // taken from spike function
+				
+		float current_height = rand_broj*20-10-window_height/2;
+
+		draw_token(token_radius, current_height, -width);
+
+		token_width = -width;
+		token_height = current_height;
+	}
+	else{
+		draw_token(token_radius, height, width);
+	}
 }

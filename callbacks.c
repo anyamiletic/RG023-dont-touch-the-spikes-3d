@@ -31,6 +31,10 @@ int visine_desno[50];
 extern float spike_width_left;
 extern float spike_width_right;
 
+	//promenljive vezane za token
+extern float token_width;
+extern float token_height;
+
 void on_display(void){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -107,8 +111,10 @@ void on_display(void){
 		draw_spike_wall("right", difficulty_level, wall);
 	}
 
-	draw_token(20, 50);
-	ball_token_collision("left", translate_x, translate_y, 40, -50);
+	
+	bool token_collision = ball_token_collision("left", translate_x, translate_y, token_height, token_width);
+	draw_rand_token(20, token_height, token_width, token_collision);
+
 	wall = false;
 
 	glutSwapBuffers();
