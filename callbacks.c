@@ -116,7 +116,7 @@ void on_display(void){
 	}
 
 	
-	bool token_collision = ball_token_collision("left", translate_x, translate_y, token_height, token_width);
+	bool token_collision = ball_token_collision(translate_x, translate_y, token_height, token_width);
 	draw_rand_token(token_radius, token_height, token_width, token_collision);
 
 	wall = false;

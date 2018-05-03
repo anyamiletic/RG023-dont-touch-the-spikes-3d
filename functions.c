@@ -146,12 +146,9 @@ bool spike_collision(float height1, float height2){
 }
 
 
-int parametar = 10;
+int parametar = 10; //za rotaciju
 void draw_token(float token_radius, float height, float width){
-	//TODO: draw a sphere with radius
-	//token_radius, and cut itwith a 
-	//cutting plane to achieve a 3D disc
-
+	
 	glEnable(GL_LIGHTING);
 
 	//cylinder
@@ -181,8 +178,8 @@ void draw_token(float token_radius, float height, float width){
 	glRotatef(parametar, 0, 1, 0);
 		
 	gluDisk(gluNewQuadric(), 5, token_radius, 20, 20);
-
 	glPopMatrix();
+	
 	parametar++;
 }
 
