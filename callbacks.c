@@ -128,21 +128,22 @@ void on_keyboard(unsigned char key, int x, int y){
 	switch(key){
 		case ESC:
 			exit(EXIT_SUCCESS);
-		case 'g':
-		case 'G':
-			if(!timer_active){
-				init_heights();
-				spike_width_left = window_width/2 + spike_height;
-				spike_width_right = window_width/2 + spike_height;
-				timer_active = 1;
-				glutTimerFunc(20, on_timer, 0);
-			}
-			break;
+		// case 'g':
+		// case 'G':
+		// 	if(!timer_active){
+		// 		init_heights();
+		// 		spike_width_left = window_width/2 + spike_height;
+		// 		spike_width_right = window_width/2 + spike_height;
+		// 		timer_active = 1;
+		// 		glutTimerFunc(20, on_timer, 0);
+		// 	}
+		// 	break;
 		case SPACEBAR:
 			if(!timer_active){
 				timer_active = 1;
 				spike_width_left = window_width/2 + spike_height;
 				spike_width_right = window_width/2 + spike_height;
+				token_width = -1* window_width/2 + 3*token_radius;
 				init_heights();
 				glutTimerFunc(20, on_timer, 0);
 			}
