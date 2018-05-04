@@ -123,14 +123,16 @@ bool ball_spike_collision(float pos_x, float pos_y, float visina, char *side){
 		//not on the same vertical side
 		return false;
 	}
-	if(((strcmp("left", side) == 0) && (pos_x < 0)) || ((strcmp("left", side) != 0) && (pos_x > 0))) {
+	if((!strcmp("left", side) && (pos_x < 0)) || (strcmp("left", side) && (pos_x > 0))) {
 		//chance of collision as the ball and the spike are on the same side
 		if(abs(pos_y) - 20 > abs(visina) || abs(pos_y) + 20 < abs(visina) ){
 			//ball completely above or below spike
 			return false;
 		}
 		else{
-			return true;
+			if(abs(pos_y) < abs(visina)+3 && abs(pos_y) > abs(visina)-3)
+				return true;
+			//gives a slightly better collision
 		}
 	}
 
@@ -179,7 +181,7 @@ void draw_token(float token_radius, float height, float width){
 		
 	gluDisk(gluNewQuadric(), 5, token_radius, 20, 20);
 	glPopMatrix();
-	
+
 	parametar++;
 }
 

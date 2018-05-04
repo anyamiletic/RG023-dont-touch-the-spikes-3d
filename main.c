@@ -43,7 +43,7 @@ int main(int argc, char **argv){
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 
-	glutInitWindowSize(300, 500);
+	glutInitWindowSize(400, 500);
 	glutInitWindowPosition(100, 100);
 	glutCreateWindow("ImeAplikacije");
 
@@ -67,8 +67,11 @@ int main(int argc, char **argv){
 	spike_width_right = 0;
 	token_width = -90;
 	token_height = 50;
+
+	//spikes are equilateral triangles
 	spike_base = 20;
-	spike_height = 25;
+	spike_height = spike_base * sqrt(3) / 2;
+	
 	ball_radius = 20;
 	token_radius = 15;
 

@@ -107,7 +107,7 @@ void on_display(void){
 	}//end
 	
 	if(collision){
-		draw_spike_wall("right", difficulty_level-1, false);
+		draw_spike_wall("right", difficulty_level, false);
 		draw_spike_wall("left", difficulty_level, wall);
 	}
 	else{
@@ -128,23 +128,23 @@ void on_keyboard(unsigned char key, int x, int y){
 	switch(key){
 		case ESC:
 			exit(EXIT_SUCCESS);
-		// case 'g':
-		// case 'G':
-		// 	if(!timer_active){
-		// 		init_heights();
-		// 		spike_width_left = window_width/2 + spike_height;
-		// 		spike_width_right = window_width/2 + spike_height;
-		// 		timer_active = 1;
-		// 		glutTimerFunc(20, on_timer, 0);
-		// 	}
-		// 	break;
+		case 'g':
+		case 'G':
+			if(!timer_active){
+				init_heights();
+				spike_width_left = window_width/2 + spike_height;
+				spike_width_right = window_width/2 + spike_height;
+				timer_active = 1;
+				glutTimerFunc(20, on_timer, 0);
+			}
+			break;
 		case SPACEBAR:
 			if(!timer_active){
 				timer_active = 1;
-				spike_width_left = window_width/2 + spike_height;
-				spike_width_right = window_width/2 + spike_height;
+				// spike_width_left = window_width/2 + spike_height;
+				// spike_width_right = window_width/2 + spike_height;
 				token_width = -1* window_width/2 + 3*token_radius;
-				init_heights();
+				//init_heights();
 				glutTimerFunc(20, on_timer, 0);
 			}
 			else{
@@ -198,7 +198,7 @@ void on_timer(int value){
 		collision = 1;
 		brojac = -brojac;
 		wall = true;
-		if(difficulty_level < 7) difficulty_level += 1;
+		//if(difficulty_level < 7) difficulty_level += 1;	//checkpoint
 	}
 	else if(translate_x < -window_width/2 + 20){				
 		spike_width_right = window_width/2 + spike_height;
@@ -216,11 +216,11 @@ void on_timer(int value){
 	//istog mesta. nadam se.
 	if(jump) {brojac = 0;}
 
-	brojac = (collision==0) ? brojac+0.1 : brojac-0.1;	//aaaaaaaaaaaaaaaaaaa
+	brojac = (collision==0) ? brojac+0.1 : brojac-0.1;
 
 	//ball movement function
 	//try to plot  -((x^2-4)
-	translate_x += brojac*9/6;	//this multiplication helps the movement
+	translate_x += brojac*10/6;	//this multiplication helps the movement
 	translate_y += -1*((brojac)*(brojac)-4);
 	
 
