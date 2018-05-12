@@ -9,3 +9,5 @@ bool spike_collision(float height1, float height2);
 void draw_token(float token_radius, float height, float width);
 bool ball_token_collision(float pos_x, float pos_y, float token_height, float token_width);
 void draw_rand_token(float token_radius, float height, float width, bool collision);
+
+void drawBitmapText(char *string,float x,float y,float z);

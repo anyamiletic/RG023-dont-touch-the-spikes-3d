@@ -214,3 +214,14 @@ void draw_rand_token(float token_radius, float height, float width, bool collisi
 		draw_token(token_radius, height, width);
 	}
 }
+
+void drawBitmapText(char *string,float x,float y,float z){
+	//taken from http://www.codersource.net/2011/01/27/displaying-text-opengl-tutorial-5/  
+	char *c = string;
+	int i;
+	glRasterPos3f(x, y,z);
+
+	for (i = 0; c[i] != '\0'; i++) {
+		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, c[i]);
+	}
+}

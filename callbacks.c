@@ -39,6 +39,10 @@ extern float token_width;
 extern float token_height;
 extern float token_radius;
 
+	//promenljive vezane za tok igre
+extern int score;
+extern int lives;
+
 void on_display(void){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -96,14 +100,18 @@ void on_display(void){
 	//provera za collision, treba obrisati posle!
 	int i;
 	for(i = 0; i < difficulty_level; i++){
-		if(ball_spike_collision(translate_x, translate_y, visine_levo[i], "left"))
+		if(ball_spike_collision(translate_x, translate_y, visine_levo[i], "left")){
 			printf("kolizija sa spikeom %d, posx: %.4f posy: %.4f visina: %d\n", 
 				i, translate_x, translate_y, visine_levo[i]);
+			lives--;
+		}
 	}
 	for(i = 0; i < difficulty_level; i++){
-		if(ball_spike_collision(translate_x, translate_y, visine_desno[i], "right"))
+		if(ball_spike_collision(translate_x, translate_y, visine_desno[i], "right")){
 			printf("kolizija sa spikeom %d, posx: %.4f posy: %.4f visina: %d\n", 
 				i, translate_x, translate_y, visine_levo[i]);
+			lives--;
+		}
 	}//end
 	
 	if(collision){
@@ -118,8 +126,18 @@ void on_display(void){
 	
 	bool token_collision = ball_token_collision(translate_x, translate_y, token_height, token_width);
 	draw_rand_token(token_radius, token_height, token_width, token_collision);
+	if(token_collision) {
+		score++;
+	}
 
 	wall = false;
+
+	//draw the score
+		//score = difficulty_level;
+	char sample_text[10];
+	sprintf(sample_text, "score: %d", score);
+	drawBitmapText(sample_text, window_width/2-100, -window_height/2 + 30, 0);
+
 
 	glutSwapBuffers();
 }
@@ -206,6 +224,7 @@ void on_timer(int value){
 		brojac = -brojac;
 		wall = true;
 		if(difficulty_level < 7) difficulty_level += 1;
+		score++;
 	}
 
 	//spike movement

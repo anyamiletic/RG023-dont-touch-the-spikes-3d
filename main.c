@@ -37,6 +37,9 @@ float token_width;
 float token_height;
 float token_radius;
 
+	//promenljive vezane za tok igre
+int score;
+int lives;
 
 
 int main(int argc, char **argv){
@@ -74,6 +77,9 @@ int main(int argc, char **argv){
 	
 	ball_radius = 20;
 	token_radius = 15;
+
+	score = 0;
+	lives = 2;
 
 	glutMainLoop();
 	return 0;
