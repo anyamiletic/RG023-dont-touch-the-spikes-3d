@@ -61,7 +61,7 @@ int main(int argc, char **argv){
 	glClearColor(0.75, 0.75, 0.75, 0);
 
 	//inicijalizacija globalnih promenljivih
-	GAME_MODE = ACTIVE;
+	GAME_MODE = START;
 
 	timer_active = 0;
 	brojac = 0;
@@ -71,7 +71,7 @@ int main(int argc, char **argv){
 	jump = false;
 	spike_width_left = 0;
 	spike_width_right = 0;
-	token_width = -90;
+	token_width = -150;
 	token_height = 50;
 
 	//spikes are equilateral triangles

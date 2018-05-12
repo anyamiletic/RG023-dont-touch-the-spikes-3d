@@ -89,6 +89,15 @@ void on_display(void){
     glMaterialf(GL_FRONT, GL_SHININESS, shininess);
 
     if(GAME_MODE == START){
+    	char line1[30];
+    	char line2[30];
+    	char line3[10];
+
+    	glColor3f(0.7, 0, 0);
+    	sprintf(line1, "don't touch the spikes");
+    	sprintf(line2, "PRESS G TO START!");
+    	drawBitmapText(line1, -window_width/2+40, 30, 0);
+    	drawBitmapText(line2, -window_width/2+40, 0, 0);
 
     }
 
@@ -166,6 +175,7 @@ void on_keyboard(unsigned char key, int x, int y){
 		case 'G':
 			if(!timer_active){
 				init_heights();
+				GAME_MODE = ACTIVE;
 				spike_width_left = window_width/2 + spike_height;
 				spike_width_right = window_width/2 + spike_height;
 				timer_active = 1;
@@ -231,7 +241,6 @@ void on_timer(int value){
 	if(GAME_MODE == ACTIVE){
 		//menjanje vrednosti promenljivih koje ucestvuju u animaciji
 		
-		//TODO ne treba svaki put da se povecava difficulty_level
 		if(translate_x > window_width/2 - 20){
 			spike_width_left = window_width/2 + spike_height;
 			collision = 1;
