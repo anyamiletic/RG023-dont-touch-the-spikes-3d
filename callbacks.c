@@ -9,7 +9,11 @@
 
 #define SPACEBAR 32
 #define ESC 27
+#define START 1
+#define ACTIVE 2
+#define END 3
 
+extern int GAME_MODE;
 
 extern int timer_active;
 extern float window_width;
@@ -84,63 +88,72 @@ void on_display(void){
     glMaterialfv(GL_FRONT, GL_SPECULAR, specular_coeffs);
     glMaterialf(GL_FRONT, GL_SHININESS, shininess);
 
-	//pozicioniranje objekata
+    if(GAME_MODE == START){
 
-		//glavna lopta
-	glColor3f(0.7, 0, 0);
-	glPushMatrix();
-	glTranslatef(translate_x, translate_y, 0);
-	glutSolidSphere(ball_radius, ball_radius/2, ball_radius/2);
-	glPopMatrix();
+    }
 
-	
-	//u oridjidji igrici se spikeovi ne 
-	//pomeraju, samo se svaki put ponovo stvaraju
-	
-	//provera za collision, treba obrisati posle!
-	int i;
-	for(i = 0; i < difficulty_level; i++){
-		if(ball_spike_collision(translate_x, translate_y, visine_levo[i], "left")){
-			printf("kolizija sa spikeom %d, posx: %.4f posy: %.4f visina: %d\n", 
-				i, translate_x, translate_y, visine_levo[i]);
-			lives--;
+    if(GAME_MODE == ACTIVE){
+		//pozicioniranje objekata
+
+			//glavna lopta
+		glColor3f(0.7, 0, 0);
+		glPushMatrix();
+		glTranslatef(translate_x, translate_y, 0);
+		glutSolidSphere(ball_radius, ball_radius/2, ball_radius/2);
+		glPopMatrix();
+
+		
+		//u oridjidji igrici se spikeovi ne 
+		//pomeraju, samo se svaki put ponovo stvaraju
+		
+		//provera za collision, treba obrisati posle!
+		int i;
+		for(i = 0; i < difficulty_level; i++){
+			if(ball_spike_collision(translate_x, translate_y, visine_levo[i], "left")){
+				printf("kolizija sa spikeom %d, posx: %.4f posy: %.4f visina: %d\n", 
+					i, translate_x, translate_y, visine_levo[i]);
+				lives--;
+			}
 		}
-	}
-	for(i = 0; i < difficulty_level; i++){
-		if(ball_spike_collision(translate_x, translate_y, visine_desno[i], "right")){
-			printf("kolizija sa spikeom %d, posx: %.4f posy: %.4f visina: %d\n", 
-				i, translate_x, translate_y, visine_levo[i]);
-			lives--;
+		for(i = 0; i < difficulty_level; i++){
+			if(ball_spike_collision(translate_x, translate_y, visine_desno[i], "right")){
+				printf("kolizija sa spikeom %d, posx: %.4f posy: %.4f visina: %d\n", 
+					i, translate_x, translate_y, visine_levo[i]);
+				lives--;
+			}
+		}//end
+		
+		if(collision){
+			draw_spike_wall("right", difficulty_level, false);
+			draw_spike_wall("left", difficulty_level, wall);
 		}
-	}//end
-	
-	if(collision){
-		draw_spike_wall("right", difficulty_level, false);
-		draw_spike_wall("left", difficulty_level, wall);
+		else{
+			draw_spike_wall("left", difficulty_level-1, false);
+			draw_spike_wall("right", difficulty_level, wall);
+		}
+
+		
+		bool token_collision = ball_token_collision(translate_x, translate_y, token_height, token_width);
+		draw_rand_token(token_radius, token_height, token_width, token_collision);
+		if(token_collision) {
+			score++;
+		}
+
+		wall = false;
+
+		//draw the score
+			//score = difficulty_level;
+		char score_text[10];
+		char lives_text[10];
+		sprintf(score_text, "score: %d", score);
+		sprintf(lives_text, "lives: %d", lives);
+		drawBitmapText(score_text, window_width/2-100, -window_height/2 + 30, 0);
+		drawBitmapText(lives_text, window_width/2-100, -window_height/2 + 10, 0);
 	}
-	else{
-		draw_spike_wall("left", difficulty_level-1, false);
-		draw_spike_wall("right", difficulty_level, wall);
+
+	if(GAME_MODE == END){
+
 	}
-
-	
-	bool token_collision = ball_token_collision(translate_x, translate_y, token_height, token_width);
-	draw_rand_token(token_radius, token_height, token_width, token_collision);
-	if(token_collision) {
-		score++;
-	}
-
-	wall = false;
-
-	//draw the score
-		//score = difficulty_level;
-	char score_text[10];
-	char lives_text[10];
-	sprintf(score_text, "score: %d", score);
-	sprintf(lives_text, "lives: %d", lives);
-	drawBitmapText(score_text, window_width/2-100, -window_height/2 + 30, 0);
-	drawBitmapText(lives_text, window_width/2-100, -window_height/2 + 10, 0);
-
 
 	glutSwapBuffers();
 }
@@ -211,42 +224,53 @@ void on_timer(int value){
 	if(value != 0)
 		return;
 
-	//menjanje vrednosti promenljivih koje ucestvuju u animaciji
-	
-	//TODO ne treba svaki put da se povecava difficulty_level
-	if(translate_x > window_width/2 - 20){
-		spike_width_left = window_width/2 + spike_height;
-		collision = 1;
-		brojac = -brojac;
-		wall = true;
-		//if(difficulty_level < 7) difficulty_level += 1;	//checkpoint
-	}
-	else if(translate_x < -window_width/2 + 20){				
-		spike_width_right = window_width/2 + spike_height;
-		collision = 0;
-		brojac = -brojac;
-		wall = true;
-		if(difficulty_level < 7) difficulty_level += 1;
-		score++;
+	if(GAME_MODE == START){
+
 	}
 
-	//spike movement
-	spike_width_left -= (spike_width_left > window_width/2) ? 0.4 : 0.0;
-	spike_width_right -= (spike_width_right > window_width/2) ? 0.4 : 0.0;
+	if(GAME_MODE == ACTIVE){
+		//menjanje vrednosti promenljivih koje ucestvuju u animaciji
+		
+		//TODO ne treba svaki put da se povecava difficulty_level
+		if(translate_x > window_width/2 - 20){
+			spike_width_left = window_width/2 + spike_height;
+			collision = 1;
+			brojac = -brojac;
+			wall = true;
+			//if(difficulty_level < 7) difficulty_level += 1;	//checkpoint
+		}
+		else if(translate_x < -window_width/2 + 20){				
+			spike_width_right = window_width/2 + spike_height;
+			collision = 0;
+			brojac = -brojac;
+			wall = true;
+			if(difficulty_level < 7) difficulty_level += 1;
+			score++;
+		}
 
-	//zasto? da bi krenuo u skok ispocetka, ali sa tog
-	//istog mesta. nadam se.
-	if(jump) {brojac = 0;}
+		//spike movement
+		spike_width_left -= (spike_width_left > window_width/2) ? 0.4 : 0.0;
+		spike_width_right -= (spike_width_right > window_width/2) ? 0.4 : 0.0;
 
-	brojac = (collision==0) ? brojac+0.1 : brojac-0.1;
+		//zasto? da bi krenuo u skok ispocetka, ali sa tog
+		//istog mesta. nadam se.
+		if(jump) {brojac = 0;}
 
-	//ball movement function
-	//try to plot  -((x^2-4)
-	translate_x += brojac*10/6;	//this multiplication helps the movement
-	translate_y += -1*((brojac)*(brojac)-4);
-	
+		brojac = (collision==0) ? brojac+0.1 : brojac-0.1;
 
-	jump = false;
+		//ball movement function
+		//try to plot  -((x^2-4)
+		translate_x += brojac*10/6;	//this multiplication helps the movement
+		translate_y += -1*((brojac)*(brojac)-4);
+		
+
+		jump = false;
+	}
+
+	if(GAME_MODE == END){
+
+	}
+
 	glutPostRedisplay();
 
 	if(timer_active){

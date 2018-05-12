@@ -6,15 +6,16 @@
 #include "callbacks.h"
 #include "functions.h"
 
-#define SPACEBAR 32
-
-
+#define START 1
+#define ACTIVE 2
+#define END 3
 
 	//deklaracije globalnih promenljivih
 int timer_active;
 float window_width;
 float window_height;
 
+int GAME_MODE; //koji ekran se prikazuje
 
 
 	//promenljive vezane za lokaciju sfere
@@ -60,6 +61,8 @@ int main(int argc, char **argv){
 	glClearColor(0.75, 0.75, 0.75, 0);
 
 	//inicijalizacija globalnih promenljivih
+	GAME_MODE = ACTIVE;
+
 	timer_active = 0;
 	brojac = 0;
 	translate_y = 0;
