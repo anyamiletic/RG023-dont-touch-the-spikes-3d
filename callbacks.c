@@ -134,9 +134,12 @@ void on_display(void){
 
 	//draw the score
 		//score = difficulty_level;
-	char sample_text[10];
-	sprintf(sample_text, "score: %d", score);
-	drawBitmapText(sample_text, window_width/2-100, -window_height/2 + 30, 0);
+	char score_text[10];
+	char lives_text[10];
+	sprintf(score_text, "score: %d", score);
+	sprintf(lives_text, "lives: %d", lives);
+	drawBitmapText(score_text, window_width/2-100, -window_height/2 + 30, 0);
+	drawBitmapText(lives_text, window_width/2-100, -window_height/2 + 10, 0);
 
 
 	glutSwapBuffers();
