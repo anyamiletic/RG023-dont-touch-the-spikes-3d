@@ -98,7 +98,9 @@ void on_display(void){
     	sprintf(line2, "PRESS G TO START!");
     	drawBitmapText(line1, -window_width/2+40, 30, 0);
     	drawBitmapText(line2, -window_width/2+40, 0, 0);
+    	draw_token(20, 70, 0);
 
+    	//glutTimerFunc(20, on_timer, 0);
     }
 
     if(GAME_MODE == ACTIVE){

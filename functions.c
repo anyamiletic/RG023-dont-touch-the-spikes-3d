@@ -5,6 +5,10 @@
 #include <string.h>
 #include <stdbool.h>
 #include <time.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include "functions.h"
 #include "callbacks.h"
 
@@ -224,4 +228,68 @@ void drawBitmapText(char *string,float x,float y,float z){
 	for (i = 0; c[i] != '\0'; i++) {
 		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, c[i]);
 	}
+}
+
+
+//lists and updates highscores, makes the file if one doesn't exist
+void highscores(int current_score){
+
+	int score1, score2, score3;
+
+	int fd = open("highscores.txt", O_CREAT | O_RDWR, 0600);
+	if(fd == -1){
+		printf("error opening file\n");
+		exit(EXIT_FAILURE);
+	}
+
+	FILE *f = fdopen(fd, "r+");
+	if(f == NULL){
+		printf("fdopen failed\n");
+		exit(EXIT_FAILURE);
+	}
+
+	//taken from OS 
+	struct stat fInfo;
+	if(fstat(fd, &fInfo) == -1){
+		printf("fstat failed\n");
+		exit(EXIT_FAILURE);
+	}
+	int file_size = fInfo.st_size;
+
+	if(file_size == 0){
+		score1 = 100;
+		score2 = 50;
+		score3 = 25;
+	}
+	else{
+		fscanf(f, "%d %d %d", &score1, &score2, &score3);
+	}
+
+	if(current_score > score1){
+		score3 = score2;
+		score2 = score1;
+		score1 = current_score;
+	}
+	else if(current_score > score2){
+		score3 = score2;
+		score2 = current_score;
+	}
+	else if(current_score > score3){
+		score3 = current_score;
+	}
+
+	//erase previous scores
+	if(ftruncate(fd, 0) == -1){
+		printf("ftruncate failed\n");
+		exit(EXIT_FAILURE);
+	}
+
+	fprintf(f, "%d %d %d", score1, score2, score3);
+
+	char scores[30];
+	sprintf(scores, "1st: %d, 2nd: %d, 3rd: %d", score1, score2, score3);
+	drawBitmapText(scores, -window_width/2+30, 0, 0);
+
+	fclose(f);
+	close(fd);
 }
