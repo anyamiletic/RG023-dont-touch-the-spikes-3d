@@ -91,14 +91,14 @@ void on_display(void){
     if(GAME_MODE == START){
     	char line1[30];
     	char line2[30];
-    	char line3[10];
+    	//char line3[10];
 
     	glColor3f(0.7, 0, 0);
     	sprintf(line1, "don't touch the spikes");
     	sprintf(line2, "PRESS G TO START!");
     	drawBitmapText(line1, -window_width/2+40, 30, 0);
     	drawBitmapText(line2, -window_width/2+40, 0, 0);
-    	draw_token(20, 70, 0);
+    	//draw_token(20, 70, 0);
 
     	//glutTimerFunc(20, on_timer, 0);
     }
@@ -133,6 +133,10 @@ void on_display(void){
 				lives--;
 			}
 		}//end
+
+		if(lives <= 0){
+			GAME_MODE = END;
+		}
 		
 		if(collision){
 			draw_spike_wall("right", difficulty_level, false);
@@ -153,7 +157,7 @@ void on_display(void){
 		wall = false;
 
 		//draw the score
-			//score = difficulty_level;
+			//score += difficulty_level += tokens collected
 		char score_text[10];
 		char lives_text[10];
 		sprintf(score_text, "score: %d", score);
@@ -163,7 +167,9 @@ void on_display(void){
 	}
 
 	if(GAME_MODE == END){
-
+		glColor3f(0.7, 0, 0);
+		highscores(score);
+		timer_active = 0;
 	}
 
 	glutSwapBuffers();
