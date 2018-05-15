@@ -14,7 +14,7 @@ $(TARGET): $(OBJFILES)
 
 clean:
 	rm -f $(OBJFILES) $(TARGET) *core
-	rm highscores.txt
+	rm -f highscores.txt
 
 dist: clean
 	-tar -chvj -C .. -f ../$(TARGET).tar.bz2 $(TARGET)
