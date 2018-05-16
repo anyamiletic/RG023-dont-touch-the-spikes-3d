@@ -12,6 +12,7 @@
 #define START 1
 #define ACTIVE 2
 #define END 3
+#define ACTIVE_CAVE 4
 
 extern int GAME_MODE;
 
@@ -103,7 +104,7 @@ void on_display(void){
     	//glutTimerFunc(20, on_timer, 0);
     }
 
-    if(GAME_MODE == ACTIVE){
+    if(GAME_MODE == ACTIVE || GAME_MODE == ACTIVE_CAVE){
 		//pozicioniranje objekata
 
 			//glavna lopta
@@ -147,7 +148,7 @@ void on_display(void){
 			draw_spike_wall("right", difficulty_level, wall);
 		}
 
-		
+		//if there was a collision, draw the token on the other wall
 		bool token_collision = ball_token_collision(translate_x, translate_y, token_height, token_width);
 		draw_rand_token(token_radius, token_height, token_width, token_collision);
 		if(token_collision) {
@@ -184,6 +185,17 @@ void on_keyboard(unsigned char key, int x, int y){
 			if(!timer_active){
 				init_heights();
 				GAME_MODE = ACTIVE;
+				spike_width_left = window_width/2 + spike_height;
+				spike_width_right = window_width/2 + spike_height;
+				timer_active = 1;
+				glutTimerFunc(20, on_timer, 0);
+			}
+			break;
+		case 'c':
+		case 'C':
+			if(!timer_active){
+				init_heights();
+				GAME_MODE = ACTIVE_CAVE;
 				spike_width_left = window_width/2 + spike_height;
 				spike_width_right = window_width/2 + spike_height;
 				timer_active = 1;
@@ -246,18 +258,21 @@ void on_timer(int value){
 
 	}
 
-	if(GAME_MODE == ACTIVE){
+	if(GAME_MODE == ACTIVE || GAME_MODE == ACTIVE_CAVE){
 		//menjanje vrednosti promenljivih koje ucestvuju u animaciji
 		
 		if(translate_x > window_width/2 - 20){
-			spike_width_left = window_width/2 + spike_height;
+			if(GAME_MODE == ACTIVE) 
+				spike_width_left = window_width/2 + spike_height;
 			collision = 1;
 			brojac = -brojac;
 			wall = true;
 			//if(difficulty_level < 7) difficulty_level += 1;	//checkpoint
+			score++;
 		}
-		else if(translate_x < -window_width/2 + 20){				
-			spike_width_right = window_width/2 + spike_height;
+		else if(translate_x < -window_width/2 + 20){
+			if(GAME_MODE == ACTIVE)				
+				spike_width_right = window_width/2 + spike_height;
 			collision = 0;
 			brojac = -brojac;
 			wall = true;

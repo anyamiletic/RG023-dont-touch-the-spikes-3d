@@ -12,6 +12,11 @@
 #include "functions.h"
 #include "callbacks.h"
 
+//add the other modes after
+#define ACTIVE 2
+#define ACTIVE_CAVE 4
+extern int GAME_MODE;
+
 extern float ball_radius;
 
 extern float window_width;
@@ -58,59 +63,145 @@ void draw_new_spike(const char *side, float height){
 void draw_spike_wall(const char *side, int difficulty_level, bool change){
 	int i;
 	int j;
+	bool is_touching;
+	int rand_num;
+	float current_height;
 
-	if(change){
-		srand(time(NULL));
+	if(GAME_MODE == ACTIVE_CAVE){
+		//first, we drop all the heights down
+		for(i = 0; i < (change ? difficulty_level : difficulty_level-1); i++){
+			if(strcmp("left", side) == 0){
+				visine_levo[i] -= 2;
+			}
+			else {
+				visine_desno[i] -= 2;
+			}
+		}
 
-		int rand_broj;
-		
-		float current_height;
-
-		//printf("difficulty_level: %d______\n", difficulty_level);
-		for(i = 0; i < difficulty_level; i++){
-			bool is_touching = false;
-			//number of spikes we need - 
-			//window height / spike base
-
-			//keep picking a random number
-			//until the spike is not touching
-			//another spike
+		//here we're using the change variable as an indicator 
+		//that we should add another spike
+		if(change){
+			is_touching = false;
 			do{
 				is_touching = false;
-				rand_broj = (window_height/spike_base) * rand()/RAND_MAX; // 0-max spikes to fit screen
+				rand_num = (window_height/spike_base) * rand()/RAND_MAX; // 0-max spikes to fit screen
 				
-				current_height = rand_broj*spike_base-spike_base/2-window_height/2;
-
+				current_height = rand_num*spike_base-spike_base/2+window_height/2;
 				if(strcmp("left", side) == 0){
-					for(j = 0; j < i; j++){
+					for(j = 0; j < difficulty_level; j++){
 						if(spike_collision(current_height, visine_levo[j]))
 							is_touching = true;
+						}
 					}
-				}
 				else {
-					for(j = 0; j < i; j++){
+					for(j = 0; j < difficulty_level; j++){
 						if(spike_collision(current_height, visine_desno[j]))
 							is_touching = true;
 					}
 				}
-				//printf("%s\n", is_touching ? "true":"false");
 			}while(is_touching);
 			
-
 			if(strcmp("left", side) == 0)
-				visine_levo[i] = current_height;
+				visine_levo[difficulty_level] = current_height;
 			else
-				visine_desno[i] = current_height;
+				visine_desno[difficulty_level] = current_height;
 
-			draw_new_spike(side, current_height);
+			//draw_new_spike(side, current_height);
 		}
-	}
-	else{
+
+		//finally, if one of the spikes is below the screen,
+		//we draw it back above the screen
+		//also, draw the spikes
 		for(i = 0; i < difficulty_level; i++){
-			if(strcmp("left", side) == 0)
+			if(!strcmp("left", side)){
+				if(visine_levo[i] < -window_height/2+spike_base/2){
+					is_touching = false;
+					do{
+						is_touching = false;
+						rand_num = (window_height/spike_base) * rand()/RAND_MAX; // 0-max spikes to fit screen
+						
+						current_height = rand_num*spike_base-spike_base/2+window_height/2;
+						for(j = 0; j < difficulty_level; j++){
+							if(j==i) continue; //skips itself
+							if(spike_collision(current_height, visine_levo[j]))
+								is_touching = true;
+						}
+					}while(is_touching);
+			
+					visine_levo[i] = current_height;
+				}
 				draw_new_spike(side, visine_levo[i]);
-			else
+			}
+			else{
+				if(visine_desno[i] < -window_height/2+spike_base/2){
+					is_touching = false;
+					do{
+						is_touching = false;
+						rand_num = (window_height/spike_base) * rand()/RAND_MAX; // 0-max spikes to fit screen
+						
+						current_height = rand_num*spike_base-spike_base/2+window_height/2;
+						for(j = 0; j < difficulty_level; j++){
+							if(j==i) continue; //skips itself
+							if(spike_collision(current_height, visine_desno[j]))
+								is_touching = true;
+						}
+					}while(is_touching);
+			
+					visine_desno[i] = current_height;
+				}
 				draw_new_spike(side, visine_desno[i]);
+			}
+		}
+
+	}
+	else if(GAME_MODE == ACTIVE){
+		if(change){
+			srand(time(NULL));
+
+			for(i = 0; i < difficulty_level; i++){
+				is_touching = false;
+				//number of spikes we need - 
+				//window height / spike base
+
+				//keep picking a random number
+				//until the spike is not touching
+				//another spike
+				do{
+					is_touching = false;
+					rand_num = (window_height/spike_base) * rand()/RAND_MAX; // 0-max spikes to fit screen
+					
+					current_height = rand_num*spike_base-spike_base/2-window_height/2;
+
+					if(strcmp("left", side) == 0){
+						for(j = 0; j < i; j++){
+							if(spike_collision(current_height, visine_levo[j]))
+								is_touching = true;
+						}
+					}
+					else {
+						for(j = 0; j < i; j++){
+							if(spike_collision(current_height, visine_desno[j]))
+								is_touching = true;
+						}
+					}
+				}while(is_touching);
+				
+
+				if(strcmp("left", side) == 0)
+					visine_levo[i] = current_height;
+				else
+					visine_desno[i] = current_height;
+
+				draw_new_spike(side, current_height);
+			}
+		}
+		else{
+			for(i = 0; i < difficulty_level; i++){
+				if(strcmp("left", side) == 0)
+					draw_new_spike(side, visine_levo[i]);
+				else
+					draw_new_spike(side, visine_desno[i]);
+			}
 		}
 	}
 }
@@ -152,7 +243,7 @@ bool spike_collision(float height1, float height2){
 }
 
 
-int parametar = 10; //za rotaciju
+int parametar = 10; //for rotation
 void draw_token(float token_radius, float height, float width){
 	
 	glEnable(GL_LIGHTING);
@@ -205,9 +296,9 @@ bool ball_token_collision(float pos_x, float pos_y, float token_height, float to
 
 void draw_rand_token(float token_radius, float height, float width, bool collision){
 	if(collision){
-		float rand_broj = (window_height/20) * rand()/RAND_MAX; // taken from spike function
+		float rand_num = (window_height/20) * rand()/RAND_MAX; // taken from spike function
 				
-		float current_height = rand_broj*20-10-window_height/2;
+		float current_height = rand_num*20-10-window_height/2;
 
 		draw_token(token_radius, current_height, -width);
 
@@ -258,7 +349,6 @@ void highscores(int current_score){
 	}
 	int file_size = fInfo.st_size;
 
-	printf("highscores file size: %d\n", file_size);
 	if(file_size == 0){
 		score1 = 100;
 		score2 = 50;

@@ -9,6 +9,7 @@
 #define START 1
 #define ACTIVE 2
 #define END 3
+#define ACTIVE_CAVE 4
 
 	//deklaracije globalnih promenljivih
 int timer_active;
