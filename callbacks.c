@@ -92,13 +92,15 @@ void on_display(void){
     if(GAME_MODE == START){
     	char line1[30];
     	char line2[30];
-    	//char line3[10];
+    	char line3[30];
 
     	glColor3f(0.7, 0, 0);
     	sprintf(line1, "don't touch the spikes");
-    	sprintf(line2, "PRESS G TO START!");
+    	sprintf(line2, "PRESS G TO START NORMAL MODE!");
+    	sprintf(line3, "PRESS C TO START CLIMBING MODE!");
     	drawBitmapText(line1, -window_width/2+40, 30, 0);
-    	drawBitmapText(line2, -window_width/2+40, 0, 0);
+    	drawBitmapText(line2, -window_width/2, 0, 0);
+    	drawBitmapText(line3, -window_width/2, -30, 0);
     	//draw_token(20, 70, 0);
 
     	//glutTimerFunc(20, on_timer, 0);
@@ -140,25 +142,25 @@ void on_display(void){
 		}
 		
 		if(collision){
-			draw_spike_wall("right", difficulty_level, false);
+			draw_spike_wall("right", difficulty_level, (GAME_MODE == ACTIVE_CAVE ? true : false));
 			draw_spike_wall("left", difficulty_level, wall);
 		}
 		else{
-			draw_spike_wall("left", difficulty_level-1, false);
+			draw_spike_wall("left", difficulty_level-1, (GAME_MODE == ACTIVE_CAVE ? true : false));
 			draw_spike_wall("right", difficulty_level, wall);
 		}
 
 		//if there was a collision, draw the token on the other wall
 		bool token_collision = ball_token_collision(translate_x, translate_y, token_height, token_width);
 		draw_rand_token(token_radius, token_height, token_width, token_collision);
-		if(token_collision) {
+		if(token_collision){
 			score++;
 		}
 
 		wall = false;
 
 		//draw the score
-			//score += difficulty_level += tokens collected
+		//score += difficulty_level += tokens collected
 		char score_text[10];
 		char lives_text[10];
 		sprintf(score_text, "score: %d", score);
@@ -196,8 +198,8 @@ void on_keyboard(unsigned char key, int x, int y){
 			if(!timer_active){
 				init_heights();
 				GAME_MODE = ACTIVE_CAVE;
-				spike_width_left = window_width/2 + spike_height;
-				spike_width_right = window_width/2 + spike_height;
+				spike_width_left = window_width/2;// + spike_height;
+				spike_width_right = window_width/2;// + spike_height;
 				timer_active = 1;
 				glutTimerFunc(20, on_timer, 0);
 			}
@@ -215,9 +217,7 @@ void on_keyboard(unsigned char key, int x, int y){
 				jump = true;
 				/*znaci ovako postizemo da 
 				se brzina ne povecava - 
-				ne zovemo timer funkciju. genijalno.
-				samo menjamo parametre
-				RETARDE GLUPI */
+				ne zovemo timer funkciju*/
 			}
 			break;
 		case 's':
@@ -257,8 +257,7 @@ void on_timer(int value){
 	if(GAME_MODE == START){
 
 	}
-
-	if(GAME_MODE == ACTIVE || GAME_MODE == ACTIVE_CAVE){
+	else if(GAME_MODE == ACTIVE || GAME_MODE == ACTIVE_CAVE){
 		//menjanje vrednosti promenljivih koje ucestvuju u animaciji
 		
 		if(translate_x > window_width/2 - 20){
@@ -279,6 +278,10 @@ void on_timer(int value){
 			if(difficulty_level < 7) difficulty_level += 1;
 			score++;
 		}
+
+		//HACK
+		if(GAME_MODE == ACTIVE_CAVE && difficulty_level == 1)
+			wall = true;
 
 		//spike movement
 		spike_width_left -= (spike_width_left > window_width/2) ? 0.4 : 0.0;

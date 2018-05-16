@@ -71,7 +71,7 @@ int main(int argc, char **argv){
 	collision = 0; //nije doslo do kolizije
 	jump = false;
 	spike_width_left = 0;
-	spike_width_right = 0;
+	spike_width_right = 200;
 	token_width = -150;
 	token_height = 50;
 
