@@ -258,8 +258,11 @@ void on_timer(int value){
 
 	}
 	else if(GAME_MODE == ACTIVE || GAME_MODE == ACTIVE_CAVE){
-		//menjanje vrednosti promenljivih koje ucestvuju u animaciji
-		
+		if(translate_y > window_height/2 - ball_radius || translate_y < -window_height/2 + ball_radius){
+			GAME_MODE = END;
+			glutPostRedisplay();
+		}
+
 		if(translate_x > window_width/2 - 20){
 			if(GAME_MODE == ACTIVE) 
 				spike_width_left = window_width/2 + spike_height;
