@@ -236,6 +236,8 @@ void highscores(int current_score){
 
 	int score1, score2, score3;
 
+	//opening the file as both a stream and a descriptor
+	//to take advantage of the functions
 	int fd = open("highscores.txt", O_CREAT | O_RDWR, 0600);
 	if(fd == -1){
 		printf("error opening file\n");
@@ -256,6 +258,7 @@ void highscores(int current_score){
 	}
 	int file_size = fInfo.st_size;
 
+	printf("highscores file size: %d\n", file_size);
 	if(file_size == 0){
 		score1 = 100;
 		score2 = 50;
@@ -281,6 +284,11 @@ void highscores(int current_score){
 	//erase previous scores
 	if(ftruncate(fd, 0) == -1){
 		printf("ftruncate failed\n");
+		exit(EXIT_FAILURE);
+	}
+	//reset file offset to the beginning
+	if(lseek(fd, 0, SEEK_SET) == -1){
+		printf("lseek failed\n");
 		exit(EXIT_FAILURE);
 	}
 

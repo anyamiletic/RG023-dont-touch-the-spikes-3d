@@ -285,7 +285,7 @@ void on_timer(int value){
 	}
 
 	if(GAME_MODE == END){
-
+		timer_active = 0;
 	}
 
 	glutPostRedisplay();
