@@ -189,6 +189,18 @@ void on_keyboard(unsigned char key, int x, int y){
 				GAME_MODE = ACTIVE;
 				spike_width_left = window_width/2 + spike_height;
 				spike_width_right = window_width/2 + spike_height;
+
+				difficulty_level = 1;
+				brojac = 0;
+				translate_y = 0;
+				translate_x = 0;
+				collision = 0; //nije doslo do kolizije
+				jump = false;
+				token_width = -window_width/2 + 50;
+				token_height = 50;
+				lives = 2;
+				score = 0;
+
 				timer_active = 1;
 				glutTimerFunc(20, on_timer, 0);
 			}
@@ -200,6 +212,18 @@ void on_keyboard(unsigned char key, int x, int y){
 				GAME_MODE = ACTIVE_CAVE;
 				spike_width_left = window_width/2;// + spike_height;
 				spike_width_right = window_width/2;// + spike_height;
+
+				difficulty_level = 1;
+				brojac = 0;
+				translate_y = 0;
+				translate_x = 0;
+				collision = 0; //nije doslo do kolizije
+				jump = false;
+				token_width = -window_width/2 + 50;
+				token_height = 50;
+				lives = 2;
+				score = 0;
+
 				timer_active = 1;
 				glutTimerFunc(20, on_timer, 0);
 			}
