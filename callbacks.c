@@ -282,9 +282,13 @@ void on_timer(int value){
 
 	}
 	else if(GAME_MODE == ACTIVE || GAME_MODE == ACTIVE_CAVE){
-		if(translate_y > window_height/2 - ball_radius || translate_y < -window_height/2 + ball_radius){
-			GAME_MODE = END;
-			glutPostRedisplay();
+
+		//keeps you on the screen
+		if(translate_y > window_height/2 - ball_radius){
+			jump = false;
+		}
+		else if(translate_y < -window_height/2 + ball_radius){
+			jump = true;
 		}
 
 		if(translate_x > window_width/2 - 20){
