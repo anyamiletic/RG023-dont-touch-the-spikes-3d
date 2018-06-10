@@ -385,7 +385,8 @@ void highscores(int current_score){
 
 	char scores[30];
 	sprintf(scores, "1st: %d, 2nd: %d, 3rd: %d", score1, score2, score3);
-	drawBitmapText(scores, -window_width/2+30, 0, 0);
+	drawBitmapText(scores, -window_width/2+30, 60, 0);
+	printStartScreen();
 
 	fclose(f);
 	close(fd);
