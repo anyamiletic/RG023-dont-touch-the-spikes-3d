@@ -17,4 +17,5 @@ void printStartScreen();
 
 void makeWall(int i);
 
+void initTexture();
 void displayTextures();

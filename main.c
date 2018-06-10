@@ -39,6 +39,7 @@ int spike_height;
 float token_width;
 float token_height;
 float token_radius;
+int token_rotation;
 
 	//promenljive vezane za tok igre
 int score;
@@ -79,6 +80,7 @@ int main(int argc, char **argv){
 	spike_width_right = 200;
 	token_width = -150;
 	token_height = 50;
+	token_rotation = 10;
 
 	//spikes are equilateral triangles
 	spike_base = 20;

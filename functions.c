@@ -33,6 +33,7 @@ extern int spike_height;
 extern float token_width;
 extern float token_height;
 extern float token_radius;
+extern int token_rotation;
 
 
 //lista koja cuva visine spikeova, tj rand brojeve
@@ -209,9 +210,6 @@ void draw_spike_wall(const char *side, int difficulty_level, bool change){
 //returns true if the ball is touching the spike given as argument
 bool ball_spike_collision(float pos_x, float pos_y, float visina, char *side){
 
-	//for now, lets assume that spikes are in box-shape
-	//TODO: calc the collision with the actual shape
-	//for now, spike base 20 height 25 ball radious 20 -- all this will be through global variables
 	if((pos_x > -window_width/2 + 25 + 20)&&(pos_x < window_width/2 - 25 - 20))
 		return false;
 	if((pos_y+25 < 0 && visina > 0) || (pos_y > 0 && visina+25 < 0)){
@@ -225,7 +223,7 @@ bool ball_spike_collision(float pos_x, float pos_y, float visina, char *side){
 			return false;
 		}
 		else{
-			if(abs(pos_y) < abs(visina)+3 && abs(pos_y) > abs(visina)-3)
+			if(abs(pos_y) < abs(visina)+4 && abs(pos_y) > abs(visina)-4)
 				return true;
 			//gives a slightly better collision
 		}
@@ -234,16 +232,14 @@ bool ball_spike_collision(float pos_x, float pos_y, float visina, char *side){
 	return false;
 }
 
+//used in creating spike wall - is the generated spike touching another spike
 bool spike_collision(float height1, float height2){
-	//again, these will later be in global variable, but for now, spike width(base) is 20
 	if(height1 - height2 < 30 && height1 - height2 > -30)
 		return true;
 	else
 		return false;
 }
 
-
-int parametar = 10; //for rotation
 void draw_token(float token_radius, float height, float width){
 	
 	glEnable(GL_LIGHTING);
@@ -251,33 +247,23 @@ void draw_token(float token_radius, float height, float width){
 	//cylinder
 	glPushMatrix();	
 	glTranslatef(width, height, 0); 
-	glRotatef(parametar, 0, 1, 0);
+	glRotatef(token_rotation, 0, 1, 0);
 	
-
 	glColor3f(0.0, 0.7, 0.7);
 	
-	gluCylinder(gluNewQuadric(), token_radius, token_radius, 20, 20, 20);	
+	gluCylinder(gluNewQuadric(), token_radius, 0, 20, 20, 20);	
 	glPopMatrix();
 
-	//top disc
-	glPushMatrix();
-	glColor3f(0.0, 0.5, 0.5);
-	glTranslatef(width, height, 20);	//0 and 20 should be global variables (z coordinate)
-	glRotatef(parametar, 0, 1, 0);
+	glPushMatrix();	
+	glTranslatef(width, height, 0); 
+	glRotatef(token_rotation+180, 0, 1, 0);
 	
-	gluDisk(gluNewQuadric(), 5, token_radius, 20, 20);
+	glColor3f(0.0, 0.7, 0.7);
+	
+	gluCylinder(gluNewQuadric(), token_radius, 0, 20, 20, 20);	
 	glPopMatrix();
 
-	//botom disc
-	glPushMatrix();
-	glColor3f(0.0, 0.5, 0.5);
-	glTranslatef(width, height, 0);	//0 and 20 should be global variables (z coordinate)
-	glRotatef(parametar, 0, 1, 0);
-		
-	gluDisk(gluNewQuadric(), 5, token_radius, 20, 20);
-	glPopMatrix();
-
-	parametar++;
+	token_rotation++;
 }
 
 bool ball_token_collision(float pos_x, float pos_y, float token_height, float token_width){
@@ -334,6 +320,7 @@ void printStartScreen(){
     drawBitmapText(line2, -window_width/2+20, 0, 0);
     drawBitmapText(line3, -window_width/2+20, -30, 0);
 }
+
 //lists and updates highscores, makes the file if one doesn't exist
 void highscores(int current_score){
 
@@ -353,7 +340,7 @@ void highscores(int current_score){
 		exit(EXIT_FAILURE);
 	}
 
-	//taken from OS 
+	//check if the file existed or was just now created
 	struct stat fInfo;
 	if(fstat(fd, &fInfo) == -1){
 		printf("fstat failed\n");

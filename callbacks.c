@@ -50,7 +50,6 @@ extern int score;
 extern int lives;
 
 GLuint names[3];
-void initTexture();
 extern bool textures_initialised;
 
 void on_display(void){
