@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include "functions.h"
 #include "callbacks.h"
+#include "image.h"
 
 #define SPACEBAR 32
 #define ESC 27
@@ -47,6 +48,8 @@ extern float token_radius;
 	//promenljive vezane za tok igre
 extern int score;
 extern int lives;
+
+extern GLuint names[3];
 
 void on_display(void){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -90,24 +93,12 @@ void on_display(void){
     glMaterialf(GL_FRONT, GL_SHININESS, shininess);
 
     if(GAME_MODE == START){
-    	char line1[30];
-    	char line2[30];
-    	char line3[30];
-
-    	glColor3f(0.7, 0, 0);
-    	sprintf(line1, "don't touch the spikes");
-    	sprintf(line2, "PRESS G TO START NORMAL MODE!");
-    	sprintf(line3, "PRESS C TO START CLIMBING MODE!");
-    	drawBitmapText(line1, -window_width/2+40, 30, 0);
-    	drawBitmapText(line2, -window_width/2, 0, 0);
-    	drawBitmapText(line3, -window_width/2, -30, 0);
-    	//draw_token(20, 70, 0);
-
-    	//glutTimerFunc(20, on_timer, 0);
+    	printStartScreen();
     }
 
     if(GAME_MODE == ACTIVE || GAME_MODE == ACTIVE_CAVE){
 		//pozicioniranje objekata
+    	displayTextures();
 
 			//glavna lopta
 		glColor3f(0.7, 0, 0);
@@ -115,12 +106,8 @@ void on_display(void){
 		glTranslatef(translate_x, translate_y, 0);
 		glutSolidSphere(ball_radius, ball_radius/2, ball_radius/2);
 		glPopMatrix();
-
 		
-		//u oridjidji igrici se spikeovi ne 
-		//pomeraju, samo se svaki put ponovo stvaraju
-		
-		//provera za collision, treba obrisati posle!
+		//provera za collision
 		int i;
 		for(i = 0; i < difficulty_level; i++){
 			if(ball_spike_collision(translate_x, translate_y, visine_levo[i], "left")){
@@ -135,7 +122,7 @@ void on_display(void){
 					i, translate_x, translate_y, visine_levo[i]);
 				lives--;
 			}
-		}//end
+		}
 
 		if(lives <= 0){
 			GAME_MODE = END;
@@ -297,7 +284,6 @@ void on_timer(int value){
 			collision = 1;
 			brojac = -brojac;
 			wall = true;
-			//if(difficulty_level < 7) difficulty_level += 1;	//checkpoint
 			score++;
 		}
 		else if(translate_x < -window_width/2 + 20){
@@ -343,4 +329,84 @@ void on_timer(int value){
 		timer_active = 1;
 		glutTimerFunc(20, on_timer, value);
 	}
+}
+
+void displayTextures(){
+	makeWall(0);
+}
+
+void makeWall(int i){
+	glPushMatrix();
+
+		glTranslatef(75/2*1.5, 0, 0);
+		glRotatef(90, 0, 1, 0);
+		glTranslatef(-75*2.25/2, -75/4 + 7, 0);
+
+	    glBindTexture(GL_TEXTURE_2D, names[i]);
+	    glBegin(GL_QUADS);
+	        glNormal3f(0, 0, 1);
+
+	        glTexCoord2f(0, 0);
+	        glVertex3f(0, 0, 0);
+
+	        glTexCoord2f(75*2.25/10, 0);
+	        glVertex3f(75*2.25, 0, 0);
+
+	        glTexCoord2f(75*2.25/10, 75/20);
+	        glVertex3f(75*2.25, 75/2, 0);
+
+	        glTexCoord2f(0, 75/20);
+	        glVertex3f(0, 75/2, 0);
+	    glEnd();
+
+	    glBindTexture(GL_TEXTURE_2D, 0);
+    glPopMatrix();
+
+    glPushMatrix();
+		glTranslatef(-75/2*1.5, 0, 0);
+		glRotatef(90, 0, 1, 0);
+		glTranslatef(-75*2.25/2, -75/4 + 7, 0);
+
+	    glBindTexture(GL_TEXTURE_2D, names[i]);
+	    glBegin(GL_QUADS);
+	        glNormal3f(0, 0, 1);
+
+	        glTexCoord2f(0, 0);
+	        glVertex3f(0, 0, 0);
+
+	        glTexCoord2f(75*2.25/12, 0);
+	        glVertex3f(75*2.25, 0, 0);
+
+	        glTexCoord2f(75*2.25/12, 75/24);
+	        glVertex3f(75*2.25, 75/2, 0);
+
+	        glTexCoord2f(0, 75/24);
+	        glVertex3f(0, 75/2, 0);
+	    glEnd();
+
+	    glBindTexture(GL_TEXTURE_2D, 0);
+	glPopMatrix();
+
+	glPushMatrix();
+		glTranslatef(-75*1.5/2, -75/4 + 7, -10);
+
+	    glBindTexture(GL_TEXTURE_2D, names[i]);
+	    glBegin(GL_QUADS);
+	        glNormal3f(0, 0, 1);
+
+	        glTexCoord2f(0, 0);
+	        glVertex3f(-window_width/2, -window_height/2, 0);
+
+	        glTexCoord2f(75*1.5/12, 0);
+	        glVertex3f(window_width, -window_height/2, 0);
+
+	        glTexCoord2f(75*1.5/12, 75/24);
+	        glVertex3f(window_width, window_height, 0);
+
+	        glTexCoord2f(0, 75/24);
+	        glVertex3f(-window_width/2, window_height, 0);
+	    glEnd();
+
+	    glBindTexture(GL_TEXTURE_2D, 0);
+	glPopMatrix();
 }

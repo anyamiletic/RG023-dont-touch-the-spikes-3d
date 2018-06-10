@@ -13,3 +13,8 @@ void draw_rand_token(float token_radius, float height, float width, bool collisi
 void drawBitmapText(char *string,float x,float y,float z);
 
 void highscores(int current_score);
+void printStartScreen();
+
+void makeWall(int i);
+
+void displayTextures();

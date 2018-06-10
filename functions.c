@@ -314,14 +314,26 @@ void drawBitmapText(char *string,float x,float y,float z){
 	//taken from http://www.codersource.net/2011/01/27/displaying-text-opengl-tutorial-5/  
 	char *c = string;
 	int i;
-	glRasterPos3f(x, y,z);
+	glRasterPos3f(x, y, z);
 
 	for (i = 0; c[i] != '\0'; i++) {
 		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, c[i]);
 	}
 }
 
+void printStartScreen(){
+	char line1[30];
+    char line2[30];
+    char line3[30];
 
+    glColor3f(0.7, 0, 0);
+    sprintf(line1, "don't touch the spikes");
+    sprintf(line2, "PRESS G FOR NORMAL MODE!");
+    sprintf(line3, "PRESS C FOR CLIMBING MODE!");
+    drawBitmapText(line1, -window_width/2+40, 30, 0);
+    drawBitmapText(line2, -window_width/2+20, 0, 0);
+    drawBitmapText(line3, -window_width/2+20, -30, 0);
+}
 //lists and updates highscores, makes the file if one doesn't exist
 void highscores(int current_score){
 
@@ -391,3 +403,4 @@ void highscores(int current_score){
 	fclose(f);
 	close(fd);
 }
+

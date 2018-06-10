@@ -1,7 +1,7 @@
 TARGET   = main
 CC        = gcc
 CFLAGS    = -Wall
-OBJFILES = main.o callbacks.o functions.o
+OBJFILES = main.o callbacks.o functions.o image.o
 LDFLAGS   = -lGL -lGLU -lglut -lm
 
 %.o: %c

@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include "callbacks.h"
 #include "functions.h"
+#include "image.h"
 
 #define START 1
 #define ACTIVE 2
@@ -43,6 +44,8 @@ float token_radius;
 int score;
 int lives;
 
+GLuint names[3];
+void initTexture();
 
 int main(int argc, char **argv){
 	glutInit(&argc, argv);
@@ -61,6 +64,8 @@ int main(int argc, char **argv){
 	glEnable(GL_DEPTH_TEST);
 	glClearColor(0.75, 0.75, 0.75, 0);
 
+	initTexture();
+	
 	//inicijalizacija globalnih promenljivih
 	GAME_MODE = START;
 
@@ -89,5 +94,33 @@ int main(int argc, char **argv){
 	return 0;
 }
 
+//taken from class
+void initTexture(){
+	Image *image;
 
+    glEnable(GL_TEXTURE_2D);
+
+    glTexEnvf(GL_TEXTURE_ENV,
+              GL_TEXTURE_ENV_MODE,
+              GL_REPLACE);
+
+    image = image_init(0, 0);
+
+    glGenTextures(3, names);
+
+    image_read(image, "brick.bmp");
+
+    glBindTexture(GL_TEXTURE_2D, names[0]);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,
+                 image->width, image->height, 0,
+                 GL_RGB, GL_UNSIGNED_BYTE, image->pixels);
+
+    image_done(image);
+}
 
