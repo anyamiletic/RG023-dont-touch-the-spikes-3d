@@ -98,13 +98,14 @@ void on_display(void){
     }
 
     if(GAME_MODE == ACTIVE || GAME_MODE == ACTIVE_CAVE){
-		//pozicioniranje objekata
+		
 		if(!textures_initialised){
 			initTexture();
 			textures_initialised = true;
 		}
     	displayTextures();
 
+    	//pozicioniranje objekata
 			//glavna lopta
 		glColor3f(0.7, 0, 0);
 		glPushMatrix();
@@ -202,8 +203,8 @@ void on_keyboard(unsigned char key, int x, int y){
 			if(!timer_active){
 				init_heights();
 				GAME_MODE = ACTIVE_CAVE;
-				spike_width_left = window_width/2;// + spike_height;
-				spike_width_right = window_width/2;// + spike_height;
+				spike_width_left = window_width/2;
+				spike_width_right = window_width/2;
 
 				difficulty_level = 1;
 				brojac = 0;
@@ -223,17 +224,11 @@ void on_keyboard(unsigned char key, int x, int y){
 		case SPACEBAR:
 			if(!timer_active){
 				timer_active = 1;
-				// spike_width_left = window_width/2 + spike_height;
-				// spike_width_right = window_width/2 + spike_height;
 				token_width = -1* window_width/2 + 3*token_radius;
-				//init_heights();
 				glutTimerFunc(20, on_timer, 0);
 			}
 			else{
 				jump = true;
-				/*znaci ovako postizemo da 
-				se brzina ne povecava - 
-				ne zovemo timer funkciju*/
 			}
 			break;
 		case 's':
@@ -283,6 +278,7 @@ void on_timer(int value){
 			jump = true;
 		}
 
+		//if the ball touched the sides of the screen
 		if(translate_x > window_width/2 - 20){
 			if(GAME_MODE == ACTIVE) 
 				spike_width_left = window_width/2 + spike_height;
@@ -310,7 +306,7 @@ void on_timer(int value){
 		spike_width_right -= (spike_width_right > window_width/2) ? 0.4 : 0.0;
 
 		//zasto? da bi krenuo u skok ispocetka, ali sa tog
-		//istog mesta. nadam se.
+		//istog mesta
 		if(jump) {brojac = 0;}
 
 		brojac = (collision==0) ? brojac+0.1 : brojac-0.1;
@@ -339,7 +335,7 @@ void on_timer(int value){
 void displayTextures(){
 	makeWall(0);
 }
-
+//taken from class
 void makeWall(int i){
 	glPushMatrix();
 

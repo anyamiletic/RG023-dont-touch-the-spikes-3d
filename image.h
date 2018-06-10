@@ -1,4 +1,4 @@
-/* taken from class */
+// taken from class
 
 typedef struct {
   unsigned short type;

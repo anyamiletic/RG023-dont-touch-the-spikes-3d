@@ -232,7 +232,7 @@ bool ball_spike_collision(float pos_x, float pos_y, float visina, char *side){
 	return false;
 }
 
-//used in creating spike wall - is the generated spike touching another spike
+//used in creating spike wall - is the generated spike touching another spike?
 bool spike_collision(float height1, float height2){
 	if(height1 - height2 < 30 && height1 - height2 > -30)
 		return true;
@@ -244,7 +244,8 @@ void draw_token(float token_radius, float height, float width){
 	
 	glEnable(GL_LIGHTING);
 
-	//cylinder
+	//two cones touching at the base 
+	//make a cute diamond-like token
 	glPushMatrix();	
 	glTranslatef(width, height, 0); 
 	glRotatef(token_rotation, 0, 1, 0);

@@ -17,9 +17,6 @@ int timer_active;
 float window_width;
 float window_height;
 
-int GAME_MODE; //koji ekran se prikazuje
-
-
 	//promenljive vezane za lokaciju sfere
 float brojac;
 float translate_y;
@@ -44,6 +41,7 @@ int token_rotation;
 	//promenljive vezane za tok igre
 int score;
 int lives;
+int GAME_MODE; //koji ekran se prikazuje
 
 bool textures_initialised;
 
@@ -65,8 +63,6 @@ int main(int argc, char **argv){
 	glEnable(GL_DEPTH_TEST);
 	glClearColor(0.75, 0.75, 0.75, 0);
 
-	//initTexture();
-
 	//inicijalizacija globalnih promenljivih
 	GAME_MODE = START;
 
@@ -82,7 +78,7 @@ int main(int argc, char **argv){
 	token_height = 50;
 	token_rotation = 10;
 
-	//spikes are equilateral triangles
+	//spikeovi su jednakostranicni trouglovi
 	spike_base = 20;
 	spike_height = spike_base * sqrt(3) / 2;
 	

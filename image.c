@@ -1,4 +1,4 @@
-/* taken from class */
+// taken from class 
 
 #include <assert.h>
 #include <stdlib.h>
