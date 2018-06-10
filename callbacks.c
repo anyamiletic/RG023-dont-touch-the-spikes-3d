@@ -49,7 +49,9 @@ extern float token_radius;
 extern int score;
 extern int lives;
 
-extern GLuint names[3];
+GLuint names[3];
+void initTexture();
+extern bool textures_initialised;
 
 void on_display(void){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -98,6 +100,10 @@ void on_display(void){
 
     if(GAME_MODE == ACTIVE || GAME_MODE == ACTIVE_CAVE){
 		//pozicioniranje objekata
+		if(!textures_initialised){
+			initTexture();
+			textures_initialised = true;
+		}
     	displayTextures();
 
 			//glavna lopta
@@ -409,4 +415,34 @@ void makeWall(int i){
 
 	    glBindTexture(GL_TEXTURE_2D, 0);
 	glPopMatrix();
+}
+
+//taken from class
+void initTexture(){
+	Image *image;
+
+    glEnable(GL_TEXTURE_2D);
+
+    glTexEnvf(GL_TEXTURE_ENV,
+              GL_TEXTURE_ENV_MODE,
+              GL_REPLACE);
+
+    image = image_init(0, 0);
+
+    glGenTextures(3, names);
+
+    image_read(image, "brick.bmp");
+
+    glBindTexture(GL_TEXTURE_2D, names[0]);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,
+                 image->width, image->height, 0,
+                 GL_RGB, GL_UNSIGNED_BYTE, image->pixels);
+
+    image_done(image);
 }
