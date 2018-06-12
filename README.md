@@ -16,9 +16,9 @@ $ make
 
 ## Gameplay
 
-```sh
+
 [youtube link](https://youtu.be/jFnMSaCGJCU)
-```
+
 
 
 ## Controls
