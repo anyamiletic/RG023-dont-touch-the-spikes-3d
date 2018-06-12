@@ -14,6 +14,13 @@ OpenGl
 $ make
 ```
 
+## Gameplay
+
+```sh
+[I'm an inline-style link with title](https://youtu.be/jFnMSaCGJCU "youtube link")
+```
+
+
 ## Controls
 
 | Command       | Function      |
