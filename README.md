@@ -17,7 +17,7 @@ $ make
 ## Gameplay
 
 ```sh
-[youtube link](https://youtu.be/jFnMSaCGJCU)
+[https://youtu.be/jFnMSaCGJCU](youtube link)
 ```
 
 
